@@ -4,12 +4,16 @@
  * Purpose: Unit-tests for `stlsoft::basic_simple_string`.
  *
  * Created: 4th November 2008
- * Updated: 30th January 2024
+ * Updated: 17th February 2024
  *
  * ////////////////////////////////////////////////////////////////////// */
 
 
 /* /////////////////////////////////////////////////////////////////////////
+ * includes
+ */
+
+/* /////////////////////////////////////
  * test component header file include(s)
  */
 
@@ -26,8 +30,8 @@
 # include <stlsoft/string/string_traits.hpp>
 #endif /* USING_STLSOFT_SIMPLE_STRING */
 
-/* /////////////////////////////////////////////////////////////////////////
- * includes
+/* /////////////////////////////////////
+ * general includes
  */
 
 /* xCover header files */
@@ -49,6 +53,7 @@
 
 /* Standard C header files */
 #include <stdlib.h>
+
 
 /* /////////////////////////////////////////////////////////////////////////
  * forward declarations
@@ -160,6 +165,7 @@ namespace
 
 
 } // anonymous namespace
+
 
 /* /////////////////////////////////////////////////////////////////////////
  * main()
@@ -295,6 +301,7 @@ int main(int argc, char **argv)
     return retCode;
 }
 
+
 /* /////////////////////////////////////////////////////////////////////////
  * test function implementations
  */
@@ -344,6 +351,9 @@ namespace
 
         return stm;
     }
+
+
+    static char const alphabet[] = "abcdefghijklmnopqrstuvwxyz";
 
 
 static void test_ctor_default()
@@ -465,8 +475,6 @@ static void test_ctor_copy()
 
 static void test_ctor_range_1()
 {
-    static char const alphabet[] = "abcdefghijklmnopqrstuvwxyz";
-
     string_t        s1(alphabet);
     string_t        s2(&alphabet[0], &alphabet[0] + STLSOFT_NUM_ELEMENTS(alphabet) -1);
     string_t const  s3(s1.begin(), s1.end());
@@ -481,23 +489,25 @@ static void test_ctor_range_1()
 #ifdef USING_STLSOFT_SIMPLE_STRING
 static void test_ctor_range_2()
 {
-    static char const alphabet[] = "abcdefghijklmnopqrstuvwxyz";
-
     string_t        s1(alphabet);
     string_t        s2(&alphabet[0], &alphabet[0] + STLSOFT_NUM_ELEMENTS(alphabet) -1);
+# ifdef STLSOFT_CF_MEMBER_TEMPLATE_RANGE_METHOD_SUPPORT
     string_t const  s3(s1.rbegin(), s1.rend());
     string_t        s4(s3.rbegin(), s3.rend());
+# endif
 
     XTESTS_TEST_MULTIBYTE_STRING_EQUAL(alphabet, s1);
     XTESTS_TEST_MULTIBYTE_STRING_EQUAL(alphabet, s2);
+# ifdef STLSOFT_CF_MEMBER_TEMPLATE_RANGE_METHOD_SUPPORT
 //  XTESTS_TEST_MULTIBYTE_STRING_EQUAL(alphabet, s3);
     XTESTS_TEST_MULTIBYTE_STRING_EQUAL(alphabet, s4);
+# endif
 }
 #endif /* USING_STLSOFT_SIMPLE_STRING */
 
 static void test_concatenation_1()
 {
-    string_t    s1("abcdefghijklmnopqrstuvwxyz");
+    string_t    s1(alphabet);
     string_t    s2(s1, 0, 10);
     string_t    s3(s1, 10, 10);
     string_t    s4(s1, 20, 6);
@@ -508,7 +518,7 @@ static void test_concatenation_1()
 
 static void test_concatenation_2()
 {
-    string_t    s1("abcdefghijklmnopqrstuvwxyz");
+    string_t    s1(alphabet);
     string_t    s2 = s1.substr(0, 10);
     string_t    s3 = s1.substr(10, 10);
     string_t    s4 = s1.substr(20, 6);
@@ -520,7 +530,7 @@ static void test_concatenation_2()
 #ifndef USING_STLSOFT_SIMPLE_STRING
 static void test_concatenation_3()
 {
-    string_t    s1("abcdefghijklmnopqrstuvwxyz");
+    string_t    s1(alphabet);
     string_t    s2 = s1.substr(0, 10);
     string_t    s3 = s1;
                 s3.erase(0, 10);
@@ -533,7 +543,7 @@ static void test_concatenation_3()
 
 static void test_concatenation_4()
 {
-    string_t    s1("abcdefghijklmnopqrstuvwxyz");
+    string_t    s1(alphabet);
     string_t    s2 = s1.substr(0, 10);
     string_t    s3 = s1;
                 s3.erase(s3.begin(), s3.begin() + 10);
@@ -547,7 +557,7 @@ static void test_concatenation_4()
 
 static void test_concatenation_5()
 {
-    string_t    s1("abcdefghijklmnopqrstuvwxyz");
+    string_t    s1(alphabet);
     string_t    s2 = s1.substr(0, 10);
     string_t    s3 = s1;
                 s3.erase(s3.begin(), s3.begin() + 10);
@@ -656,6 +666,7 @@ static void test_append_1(void)
     std::stringstream   ss("abc");
 
 #ifdef USING_STLSOFT_SIMPLE_STRING
+# ifdef STLSOFT_CF_MEMBER_TEMPLATE_RANGE_METHOD_SUPPORT
     s1.clear();
     s1.append(std::istream_iterator<char>(ss), std::istream_iterator<char>());
 
@@ -663,6 +674,7 @@ static void test_append_1(void)
     XTESTS_TEST_INTEGER_EQUAL(3u, s1.size());
     XTESTS_TEST_INTEGER_GREATER_OR_EQUAL(3u, s1.capacity());
     XTESTS_TEST_MULTIBYTE_STRING_EQUAL("abc", s1);
+# endif
 #endif /* USING_STLSOFT_SIMPLE_STRING */
 }
 
@@ -690,7 +702,7 @@ static void test_append_2(void)
     XTESTS_TEST_INTEGER_GREATER_OR_EQUAL(3u, s1.capacity());
     XTESTS_TEST_MULTIBYTE_STRING_EQUAL("abc", s1);
 
-    s1.append(s2, 0u);
+    s1.append(s2, size_t(0));
 
     XTESTS_TEST_BOOLEAN_FALSE(s1.empty());
     XTESTS_TEST_INTEGER_EQUAL(3u, s1.size());
@@ -961,7 +973,7 @@ static void test_find_char()
     }
 
     {
-        string_t    s("abcdefghijklmnopqrstuvwxyz");
+        string_t    s(alphabet);
 
         XTESTS_TEST_INTEGER_EQUAL(0u, s.find('a'));
         XTESTS_TEST_INTEGER_EQUAL(1u, s.find('b', 0u));
@@ -1021,7 +1033,7 @@ static void test_find_c_string()
     }
 
     {
-        string_t    s("abcdefghijklmnopqrstuvwxyz");
+        string_t    s(alphabet);
 
         XTESTS_TEST_INTEGER_EQUAL(0u, s.find("abc"));
         XTESTS_TEST_INTEGER_EQUAL(1u, s.find("bcd", 0u));
@@ -1055,7 +1067,7 @@ static void test_find_string()
     }
 
     {
-        string_t    s("abcdefghijklmnopqrstuvwxyz");
+        string_t    s(alphabet);
 
         XTESTS_TEST_INTEGER_EQUAL(0u, s.find(string_t("abc")));
         XTESTS_TEST_INTEGER_EQUAL(1u, s.find(string_t("bcd"), 0u));
@@ -1113,7 +1125,7 @@ static void test_rfind_char()
     }
 
     {
-        string_t    s("abcdefghijklmnopqrstuvwxyz");
+        string_t    s(alphabet);
 
         XTESTS_TEST_INTEGER_EQUAL(0u, s.rfind('a'));
         XTESTS_TEST_INTEGER_EQUAL(~string_t::size_type(0u), s.rfind('b', 0u));
@@ -1169,7 +1181,7 @@ static void test_rfind_c_string()
     }
 
     {
-        string_t    s("abcdefghijklmnopqrstuvwxyz");
+        string_t    s(alphabet);
 
         XTESTS_TEST_INTEGER_EQUAL(0u, s.rfind("abc"));
         XTESTS_TEST_INTEGER_EQUAL(~string_t::size_type(0u), s.rfind("bcd", 0u));
@@ -1218,7 +1230,7 @@ static void test_rfind_string()
     }
 
     {
-        string_t    s("abcdefghijklmnopqrstuvwxyz");
+        string_t    s(alphabet);
 
         XTESTS_TEST_INTEGER_EQUAL(0u, s.rfind(string_t("abc")));
         XTESTS_TEST_INTEGER_EQUAL(~string_t::size_type(0u), s.rfind(string_t("bcd"), 0u));
@@ -1261,7 +1273,7 @@ static void test_find_first_of_char()
     }
 
     {
-        string_t    s("abcdefghijklmnopqrstuvwxyz");
+        string_t    s(alphabet);
 
         XTESTS_TEST_INTEGER_EQUAL(0u, s.find_first_of('a'));
         XTESTS_TEST_INTEGER_EQUAL(1u, s.find_first_of('b', 0u));
@@ -1295,7 +1307,7 @@ static void test_find_first_of_c_string()
     }
 
     {
-        string_t    s("abcdefghijklmnopqrstuvwxyz");
+        string_t    s(alphabet);
 
         XTESTS_TEST_INTEGER_EQUAL(0u, s.find_first_of("abc"));
         XTESTS_TEST_INTEGER_EQUAL(1u, s.find_first_of("bcd", 0u));
@@ -1330,7 +1342,7 @@ static void test_find_first_of_string()
     }
 
     {
-        string_t    s("abcdefghijklmnopqrstuvwxyz");
+        string_t    s(alphabet);
 
         XTESTS_TEST_INTEGER_EQUAL(0u, s.find_first_of(string_t("abc")));
         XTESTS_TEST_INTEGER_EQUAL(1u, s.find_first_of(string_t("bcd"), 0u));
@@ -1472,7 +1484,7 @@ static void test_find_last_of_c_string()
     }
 
     {
-        string_t    s("abcdefghijklmnopqrstuvwxyz");
+        string_t    s(alphabet);
 
         XTESTS_TEST_INTEGER_EQUAL(2u, s.find_last_of("abc"));
         XTESTS_TEST_INTEGER_EQUAL(0u, s.find_last_of("abc", 0u));
@@ -1562,7 +1574,7 @@ static void test_find_last_of_string()
     }
 
     {
-        string_t    s("abcdefghijklmnopqrstuvwxyz");
+        string_t    s(alphabet);
 
         XTESTS_TEST_INTEGER_EQUAL(2u, s.find_last_of(string_t("abc")));
         XTESTS_TEST_INTEGER_EQUAL(0u, s.find_last_of(string_t("abc"), 0u));
@@ -1762,7 +1774,7 @@ static void test_find_first_not_of_c_string(void)
     }
 
     {
-        string_t    s("abcdefghijklmnopqrstuvwxyz");
+        string_t    s(alphabet);
 
         XTESTS_TEST_INTEGER_EQUAL(3u, s.find_first_not_of(("abc")));
         XTESTS_TEST_INTEGER_EQUAL(3u, s.find_first_not_of(("abc"), 0u));
@@ -1818,7 +1830,7 @@ static void test_find_first_not_of_string(void)
     }
 
     {
-        string_t    s("abcdefghijklmnopqrstuvwxyz");
+        string_t    s(alphabet);
 
         XTESTS_TEST_INTEGER_EQUAL(3u, s.find_first_not_of(string_t("abc")));
         XTESTS_TEST_INTEGER_EQUAL(3u, s.find_first_not_of(string_t("abc"), 0u));
@@ -1976,7 +1988,7 @@ static void test_find_last_not_of_c_string(void)
     }
 
     {
-        string_t    s("abcdefghijklmnopqrstuvwxyz");
+        string_t    s(alphabet);
 
         XTESTS_TEST_INTEGER_EQUAL(25u, s.find_last_not_of(("abc")));
         XTESTS_TEST_INTEGER_EQUAL(~string_t::size_type(0u), s.find_last_not_of(("abc"), 0u));
@@ -2032,7 +2044,7 @@ static void test_find_last_not_of_string(void)
     }
 
     {
-        string_t    s("abcdefghijklmnopqrstuvwxyz");
+        string_t    s(alphabet);
 
         XTESTS_TEST_INTEGER_EQUAL(25u, s.find_last_not_of(string_t("abc")));
         XTESTS_TEST_INTEGER_EQUAL(~string_t::size_type(0u), s.find_last_not_of(string_t("abc"), 0u));
@@ -2189,7 +2201,7 @@ static void test_assign_1(void)
         XTESTS_TEST_INTEGER_EQUAL(3u, s.size());
         XTESTS_TEST_MULTIBYTE_STRING_EQUAL("abc", s);
 
-        s.assign("abcdefghijklmnopqrstuvwxyz");
+        s.assign(alphabet);
 
         XTESTS_TEST_INTEGER_EQUAL(26u, s.size());
         XTESTS_TEST_MULTIBYTE_STRING_EQUAL("abcdefghijklmnopqrstuvwxyz", s);
@@ -2206,7 +2218,7 @@ static void test_assign_2(void)
     {
         string_t    s;
 
-        s.assign("", 0u);
+        s.assign("", size_t(0));
 
         XTESTS_TEST_INTEGER_EQUAL(0u, s.size());
         XTESTS_TEST_MULTIBYTE_STRING_EQUAL("", s);
@@ -2216,17 +2228,17 @@ static void test_assign_2(void)
         XTESTS_TEST_INTEGER_EQUAL(3u, s.size());
         XTESTS_TEST_MULTIBYTE_STRING_EQUAL("abc", s);
 
-        s.assign("abcdefghijklmnopqrstuvwxyz", 26);
+        s.assign(alphabet, 26);
 
         XTESTS_TEST_INTEGER_EQUAL(26u, s.size());
         XTESTS_TEST_MULTIBYTE_STRING_EQUAL("abcdefghijklmnopqrstuvwxyz", s);
 
-        s.assign("abcdefghijklmnopqrstuvwxyz", 3);
+        s.assign(alphabet, 3);
 
         XTESTS_TEST_INTEGER_EQUAL(3u, s.size());
         XTESTS_TEST_MULTIBYTE_STRING_EQUAL("abc", s);
 
-        s.assign("", 0u);
+        s.assign("", size_t(0));
 
         XTESTS_TEST_INTEGER_EQUAL(0u, s.size());
         XTESTS_TEST_MULTIBYTE_STRING_EQUAL("", s);
@@ -2235,32 +2247,32 @@ static void test_assign_2(void)
 
 static void test_assign_3(void)
 {
-    string_t const alphabet("abcdefghijklmnopqrstuvwxyz");
+    string_t const s_alphabet(alphabet);
 
     {
         string_t    s;
 
-        s.assign(s, 0, 0);
+        s.assign(s_alphabet, 0, 0);
 
         XTESTS_TEST_INTEGER_EQUAL(0u, s.size());
         XTESTS_TEST_MULTIBYTE_STRING_EQUAL("", s);
 
-        s.assign(alphabet, 0, 3);
+        s.assign(s_alphabet, 0, 3);
 
         XTESTS_TEST_INTEGER_EQUAL(3u, s.size());
         XTESTS_TEST_MULTIBYTE_STRING_EQUAL("abc", s);
 
-        s.assign(alphabet, 0, 26);
+        s.assign(s_alphabet, 0, 26);
 
         XTESTS_TEST_INTEGER_EQUAL(26u, s.size());
         XTESTS_TEST_MULTIBYTE_STRING_EQUAL("abcdefghijklmnopqrstuvwxyz", s);
 
-        s.assign(alphabet.begin(), alphabet.end());
+        s.assign(s_alphabet.begin(), s_alphabet.end());
 
         XTESTS_TEST_INTEGER_EQUAL(26u, s.size());
         XTESTS_TEST_MULTIBYTE_STRING_EQUAL("abcdefghijklmnopqrstuvwxyz", s);
 
-        s.assign(alphabet, 25, 0);
+        s.assign(s_alphabet, 25, 0);
 
         XTESTS_TEST_INTEGER_EQUAL(0u, s.size());
         XTESTS_TEST_MULTIBYTE_STRING_EQUAL("", s);
@@ -2270,6 +2282,7 @@ static void test_assign_3(void)
 #ifdef USING_STLSOFT_SIMPLE_STRING
 static void test_assign_4(void)
 {
+# ifdef STLSOFT_CF_MEMBER_TEMPLATE_RANGE_METHOD_SUPPORT
     std::stringstream   ss("abc");
 
     string_t    s1 = string_t(std::istream_iterator<char>(ss), std::istream_iterator<char>());
@@ -2278,6 +2291,7 @@ static void test_assign_4(void)
     XTESTS_TEST_INTEGER_EQUAL(3u, s1.size());
     XTESTS_TEST_INTEGER_GREATER_OR_EQUAL(3u, s1.capacity());
     XTESTS_TEST_MULTIBYTE_STRING_EQUAL("abc", s1);
+# endif
 }
 #endif /* USING_STLSOFT_SIMPLE_STRING */
 
@@ -2714,6 +2728,7 @@ static void test_string_traits(void)
 }
 
 } // anonymous namespace
+
 
 /* ///////////////////////////// end of file //////////////////////////// */
 

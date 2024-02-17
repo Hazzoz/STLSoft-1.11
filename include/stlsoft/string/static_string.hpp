@@ -4,7 +4,7 @@
  * Purpose:     basic_static_string class template.
  *
  * Created:     11th June 1994
- * Updated:     30th January 2024
+ * Updated:     17th February 2024
  *
  * Thanks:      To Cláudio Albuquerque for supplying the pop_back() member.
  *
@@ -57,8 +57,9 @@
 # define STLSOFT_VER_STLSOFT_STRING_HPP_STATIC_STRING_MAJOR    5
 # define STLSOFT_VER_STLSOFT_STRING_HPP_STATIC_STRING_MINOR    1
 # define STLSOFT_VER_STLSOFT_STRING_HPP_STATIC_STRING_REVISION 1
-# define STLSOFT_VER_STLSOFT_STRING_HPP_STATIC_STRING_EDIT     222
+# define STLSOFT_VER_STLSOFT_STRING_HPP_STATIC_STRING_EDIT     223
 #endif /* !STLSOFT_DOCUMENTATION_SKIP_SECTION */
+
 
 /* /////////////////////////////////////////////////////////////////////////
  * includes
@@ -119,6 +120,7 @@
 # endif /* !STLSOFT_INCL_STDEXCEPT */
 #endif /* !STLSOFT_CF_EXCEPTION_SUPPORT */
 
+
 /* /////////////////////////////////////////////////////////////////////////
  * namespace
  */
@@ -127,6 +129,7 @@
 namespace stlsoft
 {
 #endif /* STLSOFT_NO_NAMESPACE */
+
 
 /* /////////////////////////////////////////////////////////////////////////
  * classes
@@ -595,6 +598,7 @@ private:
 /// @}
 };
 
+
 /* /////////////////////////////////////////////////////////////////////////
  * operators
  */
@@ -958,6 +962,7 @@ operator >=(
 
 #endif /* !STLSOFT_DOCUMENTATION_SKIP_SECTION */
 
+
 /* /////////////////////////////////////////////////////////////////////////
  * swapping
  */
@@ -971,6 +976,7 @@ inline void swap(basic_static_string<C, V_internalSize, T>& lhs, basic_static_st
 {
     lhs.swap(rhs);
 }
+
 
 /* /////////////////////////////////////////////////////////////////////////
  * shims
@@ -1097,7 +1103,6 @@ inline ss_size_t c_str_len(STLSOFT_NS_QUAL(basic_static_string)<C, V_internalSiz
 }
 
 #endif /* !STLSOFT_CF_TEMPLATE_SHIMS_NOT_SUPPORTED */
-
 
 
 /* /////////////////////////////////////////////////////////////////////////
@@ -2342,6 +2347,7 @@ inline ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::reverse
 
 #endif /* !STLSOFT_DOCUMENTATION_SKIP_SECTION */
 
+
 /* /////////////////////////////////////////////////////////////////////////
  * namespace
  */
@@ -2372,6 +2378,7 @@ namespace std
 # endif /* INTEL && _MSC_VER < 1310 */
 #endif /* STLSOFT_CF_std_NAMESPACE */
 
+
 /* /////////////////////////////////////////////////////////////////////////
  * inclusion control
  */
@@ -2379,8 +2386,6 @@ namespace std
 #ifdef STLSOFT_CF_PRAGMA_ONCE_SUPPORT
 # pragma once
 #endif /* STLSOFT_CF_PRAGMA_ONCE_SUPPORT */
-
-/* ////////////////////////////////////////////////////////////////////// */
 
 #endif /* !STLSOFT_INCL_STLSOFT_STRING_HPP_STATIC_STRING */
 

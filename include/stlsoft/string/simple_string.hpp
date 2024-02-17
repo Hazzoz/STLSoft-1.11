@@ -4,7 +4,7 @@
  * Purpose:     basic_simple_string class template.
  *
  * Created:     19th March 1993
- * Updated:     30th January 2024
+ * Updated:     17th February 2024
  *
  * Home:        http://stlsoft.org/
  *
@@ -55,8 +55,9 @@
 # define STLSOFT_VER_STLSOFT_STRING_HPP_SIMPLE_STRING_MAJOR    4
 # define STLSOFT_VER_STLSOFT_STRING_HPP_SIMPLE_STRING_MINOR    4
 # define STLSOFT_VER_STLSOFT_STRING_HPP_SIMPLE_STRING_REVISION 1
-# define STLSOFT_VER_STLSOFT_STRING_HPP_SIMPLE_STRING_EDIT     271
+# define STLSOFT_VER_STLSOFT_STRING_HPP_SIMPLE_STRING_EDIT     272
 #endif /* !STLSOFT_DOCUMENTATION_SKIP_SECTION */
+
 
 /* /////////////////////////////////////////////////////////////////////////
  * includes
@@ -123,14 +124,16 @@
 # include <stdexcept>                       // for std::out_of_range
 #endif /* !STLSOFT_CF_EXCEPTION_SUPPORT */
 
+
 /* /////////////////////////////////////////////////////////////////////////
- *
+ * compatibility
  */
 
 #if defined(STLSOFT_COMPILER_IS_MSVC) && \
     _MSC_VER < 1200
 # define STLSOFT_SIMPLE_STRING_ITERATOR_METHODS_INLINE
 #endif /* compiler */
+
 
 /* /////////////////////////////////////////////////////////////////////////
  * namespace
@@ -140,6 +143,7 @@
 namespace stlsoft
 {
 #endif /* STLSOFT_NO_NAMESPACE */
+
 
 /* /////////////////////////////////////////////////////////////////////////
  * classes
@@ -686,6 +690,7 @@ private:
 /// @}
 };
 
+
 /* /////////////////////////////////////////////////////////////////////////
  * typedefs
  */
@@ -705,6 +710,7 @@ typedef basic_simple_string<
 ,   allocator_selector<ss_char_w_t>::allocator_type
 >                                                           simple_wstring;
 #endif /* STLSOFT_CF_TEMPLATE_CLASS_DEFAULT_CLASS_ARGUMENT_SUPPORT */
+
 
 /* /////////////////////////////////////////////////////////////////////////
  * traits
@@ -851,6 +857,7 @@ struct string_traits<simple_wstring>
     }
 };
 # endif /* STLSOFT_CF_TEMPLATE_PARTIAL_SPECIALISATION_SUPPORT */
+
 
 /* /////////////////////////////////////////////////////////////////////////
  * operators
@@ -1133,6 +1140,7 @@ inline basic_simple_string<C, T, A> operator +(C lhs, basic_simple_string<C, T, 
 
 #endif /* !STLSOFT_DOCUMENTATION_SKIP_SECTION */
 
+
 /* /////////////////////////////////////////////////////////////////////////
  * shims
  */
@@ -1270,7 +1278,6 @@ inline ss_size_t c_str_len_w(basic_simple_string<ss_char_w_t, T, A> const& s)
 }
 
 
-
 /* /////////////////////////////////////////////////////////////////////////
  * stream insertion
  */
@@ -1308,6 +1315,7 @@ inline void swap(basic_simple_string<C, T, A>& lhs, basic_simple_string<C, T, A>
 {
     lhs.swap(rhs);
 }
+
 
 /* /////////////////////////////////////////////////////////////////////////
  * implementation
@@ -2742,6 +2750,7 @@ inline ss_bool_t basic_simple_string<C, T, A>::empty() const
 
 #endif /* !STLSOFT_DOCUMENTATION_SKIP_SECTION */
 
+
 /* ////////////////////////////////////////////////////////////////////// */
 
 #ifndef STLSOFT_NO_NAMESPACE
@@ -2768,6 +2777,7 @@ namespace std
 } /* namespace std */
 # endif /* INTEL && _MSC_VER < 1310 */
 #endif /* STLSOFT_CF_std_NAMESPACE */
+
 
 /* /////////////////////////////////////////////////////////////////////////
  * inclusion control

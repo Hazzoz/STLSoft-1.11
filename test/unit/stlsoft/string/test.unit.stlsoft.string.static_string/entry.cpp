@@ -4,19 +4,23 @@
  * Purpose: Unit-tests for `stlsoft::basic_static_string`.
  *
  * Created: 4th November 2008
- * Updated: 17th January 2024
+ * Updated: 17th February 2024
  *
  * ////////////////////////////////////////////////////////////////////// */
 
 
 /* /////////////////////////////////////////////////////////////////////////
+ * includes
+ */
+
+/* /////////////////////////////////////
  * test component header file include(s)
  */
 
 #include <stlsoft/string/static_string.hpp>
 
-/* /////////////////////////////////////////////////////////////////////////
- * includes
+/* /////////////////////////////////////
+ * general includes
  */
 
 /* xTests header files */
@@ -27,6 +31,7 @@
 
 /* Standard C header files */
 #include <stdlib.h>
+
 
 /* /////////////////////////////////////////////////////////////////////////
  * forward declarations
@@ -57,6 +62,7 @@ namespace
     static void test_1_19(void);
 
 } // anonymous namespace
+
 
 /* /////////////////////////////////////////////////////////////////////////
  * main()
@@ -100,12 +106,17 @@ int main(int argc, char **argv)
     return retCode;
 }
 
+
 /* /////////////////////////////////////////////////////////////////////////
  * test function implementations
  */
 
 namespace
 {
+
+
+    static char const alphabet[] = "abcdefghijklmnopqrstuvwxyz";
+
 
 static void test_1_0()
 {
@@ -208,14 +219,14 @@ static void test_copy()
 {
     typedef stlsoft::basic_static_string<char, 26> string_t;
 
-    string_t const alphabet("abcdefghijklmnopqrstuvwxyz");
+    string_t const s_alphabet(alphabet);
 
-    XTESTS_TEST_MULTIBYTE_STRING_EQUAL("abcdefghijklmnopqrstuvwxyz", alphabet);
+    XTESTS_TEST_MULTIBYTE_STRING_EQUAL("abcdefghijklmnopqrstuvwxyz", s_alphabet);
 
     {
         char dest[26 + 1] = { 0 };
 
-        size_t n = alphabet.copy(&dest[0], 26);
+        size_t n = s_alphabet.copy(&dest[0], 26);
         dest[26] = '\0';
 
         XTESTS_TEST_INTEGER_EQUAL(26, n);
@@ -225,7 +236,7 @@ static void test_copy()
     {
         char dest[20 + 1] = { 0 };
 
-        size_t n = alphabet.copy(&dest[0], 20);
+        size_t n = s_alphabet.copy(&dest[0], 20);
         dest[20] = '\0';
 
         XTESTS_TEST_INTEGER_EQUAL(20, n);
@@ -235,7 +246,7 @@ static void test_copy()
     {
         char dest[20 + 1] = { 0 };
 
-        size_t n = alphabet.copy(&dest[0], 20, 6);
+        size_t n = s_alphabet.copy(&dest[0], 20, 6);
         dest[20] = '\0';
 
         XTESTS_TEST_INTEGER_EQUAL(20, n);
@@ -245,7 +256,7 @@ static void test_copy()
     {
         char dest[10 + 1] = { 0 };
 
-        size_t n = alphabet.copy(&dest[0], 20, 16);
+        size_t n = s_alphabet.copy(&dest[0], 20, 16);
         dest[10] = '\0';
 
         XTESTS_TEST_INTEGER_EQUAL(10, n);
@@ -259,6 +270,7 @@ static void test_1_19()
 
 
 } // anonymous namespace
+
 
 /* ///////////////////////////// end of file //////////////////////////// */
 
