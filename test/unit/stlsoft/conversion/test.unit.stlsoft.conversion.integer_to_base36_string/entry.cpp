@@ -1,9 +1,9 @@
 /* /////////////////////////////////////////////////////////////////////////
- * File:    test.unit.stlsoft.convertion.integer_to_base32_string.cpp
+ * File:    test.unit.stlsoft.convertion.integer_to_base36_string.cpp
  *
- * Purpose: Unit-tests for `stlsoft::integer_to_base32_string`.
+ * Purpose: Unit-tests for `stlsoft::integer_to_base36_string`.
  *
- * Created: 17th February 2024
+ * Created: 14th February 2024
  * Updated: 18th February 2024
  *
  * ////////////////////////////////////////////////////////////////////// */
@@ -22,7 +22,7 @@
  * test component header file include(s)
  */
 
-#include <stlsoft/conversion/integer_to_string/integer_to_base32_string.hpp>
+#include <stlsoft/conversion/integer_to_string/integer_to_base36_string.hpp>
 
 /* /////////////////////////////////////
  * general includes
@@ -70,7 +70,7 @@ int main(int argc, char **argv)
 
     XTESTS_COMMANDLINE_PARSEVERBOSITY(argc, argv, &verbosity);
 
-    if (XTESTS_START_RUNNER("test.unit.stlsoft.convertion.integer_to_base32_string", verbosity))
+    if (XTESTS_START_RUNNER("test.unit.stlsoft.convertion.integer_to_base36_string", verbosity))
     {
         XTESTS_RUN_CASE(test_zero);
         XTESTS_RUN_CASE(test_ones);
@@ -88,7 +88,6 @@ int main(int argc, char **argv)
 /* /////////////////////////////////////////////////////////////////////////
  * test function implementations
  */
-
 
 namespace
 {
@@ -109,27 +108,27 @@ namespace
         ,   {          8,       "8" }
         ,   {         13,       "d" }
         ,   {         21,       "l" }
-        ,   {         34,      "12" }
-        ,   {         55,      "1n" }
-        ,   {         89,      "2p" }
-        ,   {        144,      "4g" }
-        ,   {        233,      "79" }
-        ,   {        377,      "bp" }
-        ,   {        610,      "j2" }
-        ,   {        987,      "ur" }
-        ,   {       1597,     "1ht" }
-        ,   {       2584,     "2go" }
-        ,   {       4181,     "42l" }
-        ,   {       6765,     "6jd" }
-        ,   {      10946,     "am2" }
-        ,   {      17711,     "h9f" }
-        ,   {      28657,     "rvh" }
-        ,   {      46368,    "1d90" }
-        ,   {      75025,    "298h" }
-        ,   {     121393,    "3mhh" }
-        ,   {     196418,    "5vq2" }
-        ,   {     317811,    "9mbj" }
-        ,   {     514229,    "fm5l" }
+        ,   {         34,       "y" }
+        ,   {         55,      "1j" }
+        ,   {         89,      "2h" }
+        ,   {        144,      "40" }
+        ,   {        233,      "6h" }
+        ,   {        377,      "ah" }
+        ,   {        610,      "gy" }
+        ,   {        987,      "rf" }
+        ,   {       1597,     "18d" }
+        ,   {       2584,     "1zs" }
+        ,   {       4181,     "385" }
+        ,   {       6765,     "57x" }
+        ,   {      10946,     "8g2" }
+        ,   {      17711,     "dnz" }
+        ,   {      28657,     "m41" }
+        ,   {      46368,     "zs0" }
+        ,   {      75025,    "1lw1" }
+        ,   {     121393,    "2lo1" }
+        ,   {     196418,    "47k2" }
+        ,   {     317811,    "6t83" }
+        ,   {     514229,    "b0s5" }
 
         ,   {         -1,      "-1" }
         ,   {         -2,      "-2" }
@@ -138,27 +137,27 @@ namespace
         ,   {         -8,      "-8" }
         ,   {        -13,      "-d" }
         ,   {        -21,      "-l" }
-        ,   {        -34,     "-12" }
-        ,   {        -55,     "-1n" }
-        ,   {        -89,     "-2p" }
-        ,   {       -144,     "-4g" }
-        ,   {       -233,     "-79" }
-        ,   {       -377,     "-bp" }
-        ,   {       -610,     "-j2" }
-        ,   {       -987,     "-ur" }
-        ,   {      -1597,    "-1ht" }
-        ,   {      -2584,    "-2go" }
-        ,   {      -4181,    "-42l" }
-        ,   {      -6765,    "-6jd" }
-        ,   {     -10946,    "-am2" }
-        ,   {     -17711,    "-h9f" }
-        ,   {     -28657,    "-rvh" }
-        ,   {     -46368,   "-1d90" }
-        ,   {     -75025,   "-298h" }
-        ,   {    -121393,   "-3mhh" }
-        ,   {    -196418,   "-5vq2" }
-        ,   {    -317811,   "-9mbj" }
-        ,   {    -514229,   "-fm5l" }
+        ,   {        -34,      "-y" }
+        ,   {        -55,     "-1j" }
+        ,   {        -89,     "-2h" }
+        ,   {       -144,     "-40" }
+        ,   {       -233,     "-6h" }
+        ,   {       -377,     "-ah" }
+        ,   {       -610,     "-gy" }
+        ,   {       -987,     "-rf" }
+        ,   {      -1597,    "-18d" }
+        ,   {      -2584,    "-1zs" }
+        ,   {      -4181,    "-385" }
+        ,   {      -6765,    "-57x" }
+        ,   {     -10946,    "-8g2" }
+        ,   {     -17711,    "-dnz" }
+        ,   {     -28657,    "-m41" }
+        ,   {     -46368,    "-zs0" }
+        ,   {     -75025,   "-1lw1" }
+        ,   {    -121393,   "-2lo1" }
+        ,   {    -196418,   "-47k2" }
+        ,   {    -317811,   "-6t83" }
+        ,   {    -514229,   "-b0s5" }
     };
 
 
@@ -167,7 +166,7 @@ static void test_zero()
     {
         char                buf[21];
         size_t              n;
-        char const* const   s   =   stlsoft::integer_to_base32_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), 0, &n);
+        char const* const   s   =   stlsoft::integer_to_base36_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), 0, &n);
 
         XTESTS_TEST_INTEGER_EQUAL(1u, n);
         XTESTS_TEST_MULTIBYTE_STRING_EQUAL("0", s);
@@ -177,7 +176,7 @@ static void test_zero()
 
     {
         char                buf[9];
-        char const* const   s   =   stlsoft::integer_to_base32_string(buf, 0);
+        char const* const   s   =   stlsoft::integer_to_base36_string(buf, 0);
 
         XTESTS_TEST_MULTIBYTE_STRING_EQUAL("0", s);
     }
@@ -189,7 +188,7 @@ static void test_ones()
     {
         char                buf[21];
         size_t              n;
-        char const* const   s   =   stlsoft::integer_to_base32_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), 1, &n);
+        char const* const   s   =   stlsoft::integer_to_base36_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), 1, &n);
 
         XTESTS_TEST_INTEGER_EQUAL(1u, n);
         XTESTS_TEST_MULTIBYTE_STRING_EQUAL("1", s);
@@ -198,7 +197,7 @@ static void test_ones()
     {
         char                buf[21];
         size_t              n;
-        char const* const   s   =   stlsoft::integer_to_base32_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), -1, &n);
+        char const* const   s   =   stlsoft::integer_to_base36_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), -1, &n);
 
         XTESTS_TEST_INTEGER_EQUAL(2u, n);
         XTESTS_TEST_MULTIBYTE_STRING_EQUAL("-1", s);
@@ -214,7 +213,7 @@ static void test_fibonacci()
         // check values forward (via `std::strtoll()`)
         {
             char*           endptr;
-            long long const v = strtoll(mapping.s, &endptr, 32);
+            long long const v = strtoll(mapping.s, &endptr, 36);
 
             XTESTS_TEST_INTEGER_EQUAL(mapping.v, v);
         }
@@ -226,7 +225,7 @@ static void test_fibonacci()
             char                buf[21];
             size_t              n;
             long long const     v   =   static_cast<long long>(mapping.v);
-            char const* const   s   =   stlsoft::integer_to_base32_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), v, &n);
+            char const* const   s   =   stlsoft::integer_to_base36_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), v, &n);
 
             XTESTS_TEST_MULTIBYTE_STRING_EQUAL(mapping.s, s);
         }
@@ -238,7 +237,7 @@ static void test_fibonacci()
             char                buf[21];
             size_t              n;
             long const          v   =   static_cast<long>(mapping.v);
-            char const* const   s   =   stlsoft::integer_to_base32_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), v, &n);
+            char const* const   s   =   stlsoft::integer_to_base36_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), v, &n);
 
             XTESTS_TEST_MULTIBYTE_STRING_EQUAL(mapping.s, s);
         }
@@ -250,7 +249,7 @@ static void test_fibonacci()
             char                buf[21];
             size_t              n;
             short const         v   =   static_cast<short>(mapping.v);
-            char const* const   s   =   stlsoft::integer_to_base32_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), v, &n);
+            char const* const   s   =   stlsoft::integer_to_base36_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), v, &n);
 
             XTESTS_TEST_MULTIBYTE_STRING_EQUAL(mapping.s, s);
         }
@@ -262,7 +261,7 @@ static void test_fibonacci()
             char                buf[21];
             size_t              n;
             int8_t const        v   =   static_cast<int8_t>(mapping.v);
-            char const* const   s   =   stlsoft::integer_to_base32_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), v, &n);
+            char const* const   s   =   stlsoft::integer_to_base36_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), v, &n);
 
             XTESTS_TEST_MULTIBYTE_STRING_EQUAL(mapping.s, s);
         }
@@ -274,7 +273,7 @@ static void test_fibonacci()
             char                buf[21];
             size_t              n;
             int16_t const       v   =   static_cast<int16_t>(mapping.v);
-            char const* const   s   =   stlsoft::integer_to_base32_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), v, &n);
+            char const* const   s   =   stlsoft::integer_to_base36_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), v, &n);
 
             XTESTS_TEST_MULTIBYTE_STRING_EQUAL(mapping.s, s);
         }
@@ -286,7 +285,7 @@ static void test_fibonacci()
             char                buf[21];
             size_t              n;
             int32_t const       v   =   static_cast<int32_t>(mapping.v);
-            char const* const   s   =   stlsoft::integer_to_base32_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), v, &n);
+            char const* const   s   =   stlsoft::integer_to_base36_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), v, &n);
 
             XTESTS_TEST_MULTIBYTE_STRING_EQUAL(mapping.s, s);
         }
@@ -298,7 +297,7 @@ static void test_fibonacci()
             char                buf[21];
             size_t              n;
             int64_t const       v   =   static_cast<int64_t>(mapping.v);
-            char const* const   s   =   stlsoft::integer_to_base32_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), v, &n);
+            char const* const   s   =   stlsoft::integer_to_base36_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), v, &n);
 
             XTESTS_TEST_MULTIBYTE_STRING_EQUAL(mapping.s, s);
         }
@@ -314,37 +313,37 @@ static void test_limits()
         {
             char                buf[21];
             size_t              n;
-            char const* const   s   =   stlsoft::integer_to_base32_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), std::numeric_limits<i_t>::min(), &n);
+            char const* const   s   =   stlsoft::integer_to_base36_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), std::numeric_limits<i_t>::min(), &n);
 
             XTESTS_TEST_INTEGER_EQUAL(3u, n);
-            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("-40", s);
+            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("-3k", s);
         }
 
         {
             char                buf[21];
             size_t              n;
-            char const* const   s   =   stlsoft::integer_to_base32_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), std::numeric_limits<i_t>::min() + 1, &n);
+            char const* const   s   =   stlsoft::integer_to_base36_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), std::numeric_limits<i_t>::min() + 1, &n);
 
             XTESTS_TEST_INTEGER_EQUAL(3u, n);
-            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("-3v", s);
+            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("-3j", s);
         }
 
         {
             char                buf[21];
             size_t              n;
-            char const* const   s   =   stlsoft::integer_to_base32_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), std::numeric_limits<i_t>::max(), &n);
+            char const* const   s   =   stlsoft::integer_to_base36_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), std::numeric_limits<i_t>::max(), &n);
 
             XTESTS_TEST_INTEGER_EQUAL(2u, n);
-            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("3v", s);
+            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("3j", s);
         }
 
 #ifdef STLSOFT_CF_STATIC_ARRAY_SIZE_DETERMINATION_SUPPORT
 
         {
             char                buf[4];
-            char const* const   s   =   stlsoft::integer_to_base32_string(buf, std::numeric_limits<i_t>::max());
+            char const* const   s   =   stlsoft::integer_to_base36_string(buf, std::numeric_limits<i_t>::max());
 
-            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("3v", s);
+            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("3j", s);
         }
 #endif
     }
@@ -356,7 +355,7 @@ static void test_limits()
         {
             char                buf[21];
             size_t              n;
-            char const* const   s   =   stlsoft::integer_to_base32_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), std::numeric_limits<i_t>::min(), &n);
+            char const* const   s   =   stlsoft::integer_to_base36_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), std::numeric_limits<i_t>::min(), &n);
 
             XTESTS_TEST_INTEGER_EQUAL(1u, n);
             XTESTS_TEST_MULTIBYTE_STRING_EQUAL("0", s);
@@ -365,19 +364,19 @@ static void test_limits()
         {
             char                buf[21];
             size_t              n;
-            char const* const   s   =   stlsoft::integer_to_base32_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), std::numeric_limits<i_t>::max(), &n);
+            char const* const   s   =   stlsoft::integer_to_base36_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), std::numeric_limits<i_t>::max(), &n);
 
             XTESTS_TEST_INTEGER_EQUAL(2u, n);
-            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("7v", s);
+            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("73", s);
         }
 
 #ifdef STLSOFT_CF_STATIC_ARRAY_SIZE_DETERMINATION_SUPPORT
 
         {
             char                buf[3];
-            char const* const   s   =   stlsoft::integer_to_base32_string(buf, std::numeric_limits<i_t>::max());
+            char const* const   s   =   stlsoft::integer_to_base36_string(buf, std::numeric_limits<i_t>::max());
 
-            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("7v", s);
+            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("73", s);
         }
 #endif
     }
@@ -389,37 +388,37 @@ static void test_limits()
         {
             char                buf[21];
             size_t              n;
-            char const* const   s   =   stlsoft::integer_to_base32_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), std::numeric_limits<i_t>::min(), &n);
-
-            XTESTS_TEST_INTEGER_EQUAL(5u, n);
-            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("-1000", s);
-        }
-
-        {
-            char                buf[21];
-            size_t              n;
-            char const* const   s   =   stlsoft::integer_to_base32_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), std::numeric_limits<i_t>::min() + 1, &n);
+            char const* const   s   =   stlsoft::integer_to_base36_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), std::numeric_limits<i_t>::min(), &n);
 
             XTESTS_TEST_INTEGER_EQUAL(4u, n);
-            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("-vvv", s);
+            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("-pa8", s);
         }
 
         {
             char                buf[21];
             size_t              n;
-            char const* const   s   =   stlsoft::integer_to_base32_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), std::numeric_limits<i_t>::max(), &n);
+            char const* const   s   =   stlsoft::integer_to_base36_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), std::numeric_limits<i_t>::min() + 1, &n);
+
+            XTESTS_TEST_INTEGER_EQUAL(4u, n);
+            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("-pa7", s);
+        }
+
+        {
+            char                buf[21];
+            size_t              n;
+            char const* const   s   =   stlsoft::integer_to_base36_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), std::numeric_limits<i_t>::max(), &n);
 
             XTESTS_TEST_INTEGER_EQUAL(3u, n);
-            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("vvv", s);
+            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("pa7", s);
         }
 
 #ifdef STLSOFT_CF_STATIC_ARRAY_SIZE_DETERMINATION_SUPPORT
 
         {
-            char                buf[6];
-            char const* const   s   =   stlsoft::integer_to_base32_string(buf, std::numeric_limits<i_t>::max());
+            char                buf[5];
+            char const* const   s   =   stlsoft::integer_to_base36_string(buf, std::numeric_limits<i_t>::max());
 
-            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("vvv", s);
+            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("pa7", s);
         }
 #endif
     }
@@ -431,7 +430,7 @@ static void test_limits()
         {
             char                buf[21];
             size_t              n;
-            char const* const   s   =   stlsoft::integer_to_base32_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), std::numeric_limits<i_t>::min(), &n);
+            char const* const   s   =   stlsoft::integer_to_base36_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), std::numeric_limits<i_t>::min(), &n);
 
             XTESTS_TEST_INTEGER_EQUAL(1u, n);
             XTESTS_TEST_MULTIBYTE_STRING_EQUAL("0", s);
@@ -440,19 +439,19 @@ static void test_limits()
         {
             char                buf[21];
             size_t              n;
-            char const* const   s   =   stlsoft::integer_to_base32_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), std::numeric_limits<i_t>::max(), &n);
+            char const* const   s   =   stlsoft::integer_to_base36_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), std::numeric_limits<i_t>::max(), &n);
 
             XTESTS_TEST_INTEGER_EQUAL(4u, n);
-            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("1vvv", s);
+            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("1ekf", s);
         }
 
 #ifdef STLSOFT_CF_STATIC_ARRAY_SIZE_DETERMINATION_SUPPORT
 
         {
             char                buf[5];
-            char const* const   s   =   stlsoft::integer_to_base32_string(buf, std::numeric_limits<i_t>::max());
+            char const* const   s   =   stlsoft::integer_to_base36_string(buf, std::numeric_limits<i_t>::max());
 
-            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("1vvv", s);
+            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("1ekf", s);
         }
 #endif
     }
@@ -464,37 +463,37 @@ static void test_limits()
         {
             char                buf[21];
             size_t              n;
-            char const* const   s   =   stlsoft::integer_to_base32_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), std::numeric_limits<i_t>::min(), &n);
-
-            XTESTS_TEST_INTEGER_EQUAL(8u, n);
-            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("-2000000", s);
-        }
-
-        {
-            char                buf[21];
-            size_t              n;
-            char const* const   s   =   stlsoft::integer_to_base32_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), std::numeric_limits<i_t>::min() + 1, &n);
-
-            XTESTS_TEST_INTEGER_EQUAL(8u, n);
-            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("-1vvvvvv", s);
-        }
-
-        {
-            char                buf[21];
-            size_t              n;
-            char const* const   s   =   stlsoft::integer_to_base32_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), std::numeric_limits<i_t>::max(), &n);
+            char const* const   s   =   stlsoft::integer_to_base36_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), std::numeric_limits<i_t>::min(), &n);
 
             XTESTS_TEST_INTEGER_EQUAL(7u, n);
-            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("1vvvvvv", s);
+            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("-zik0zk", s);
+        }
+
+        {
+            char                buf[21];
+            size_t              n;
+            char const* const   s   =   stlsoft::integer_to_base36_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), std::numeric_limits<i_t>::min() + 1, &n);
+
+            XTESTS_TEST_INTEGER_EQUAL(7u, n);
+            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("-zik0zj", s);
+        }
+
+        {
+            char                buf[21];
+            size_t              n;
+            char const* const   s   =   stlsoft::integer_to_base36_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), std::numeric_limits<i_t>::max(), &n);
+
+            XTESTS_TEST_INTEGER_EQUAL(6u, n);
+            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("zik0zj", s);
         }
 
 #ifdef STLSOFT_CF_STATIC_ARRAY_SIZE_DETERMINATION_SUPPORT
 
         {
-            char                buf[9];
-            char const* const   s   =   stlsoft::integer_to_base32_string(buf, std::numeric_limits<i_t>::max());
+            char                buf[8];
+            char const* const   s   =   stlsoft::integer_to_base36_string(buf, std::numeric_limits<i_t>::max());
 
-            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("1vvvvvv", s);
+            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("zik0zj", s);
         }
 #endif
     }
@@ -506,7 +505,7 @@ static void test_limits()
         {
             char                buf[21];
             size_t              n;
-            char const* const   s   =   stlsoft::integer_to_base32_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), std::numeric_limits<i_t>::min(), &n);
+            char const* const   s   =   stlsoft::integer_to_base36_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), std::numeric_limits<i_t>::min(), &n);
 
             XTESTS_TEST_INTEGER_EQUAL(1u, n);
             XTESTS_TEST_MULTIBYTE_STRING_EQUAL("0", s);
@@ -515,19 +514,19 @@ static void test_limits()
         {
             char                buf[21];
             size_t              n;
-            char const* const   s   =   stlsoft::integer_to_base32_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), std::numeric_limits<i_t>::max(), &n);
+            char const* const   s   =   stlsoft::integer_to_base36_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), std::numeric_limits<i_t>::max(), &n);
 
             XTESTS_TEST_INTEGER_EQUAL(7u, n);
-            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("3vvvvvv", s);
+            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("1z141z3", s);
         }
 
 #ifdef STLSOFT_CF_STATIC_ARRAY_SIZE_DETERMINATION_SUPPORT
 
         {
             char                buf[8];
-            char const* const   s   =   stlsoft::integer_to_base32_string(buf, std::numeric_limits<i_t>::max());
+            char const* const   s   =   stlsoft::integer_to_base36_string(buf, std::numeric_limits<i_t>::max());
 
-            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("3vvvvvv", s);
+            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("1z141z3", s);
         }
 #endif
     }
@@ -539,37 +538,37 @@ static void test_limits()
         {
             char                buf[21];
             size_t              n;
-            char const* const   s   =   stlsoft::integer_to_base32_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), std::numeric_limits<i_t>::min(), &n);
+            char const* const   s   =   stlsoft::integer_to_base36_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), std::numeric_limits<i_t>::min(), &n);
 
             XTESTS_TEST_INTEGER_EQUAL(14u, n);
-            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("-8000000000000", s);
+            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("-1y2p0ij32e8e8", s);
         }
 
         {
             char                buf[21];
             size_t              n;
-            char const* const   s   =   stlsoft::integer_to_base32_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), std::numeric_limits<i_t>::min() + 1, &n);
+            char const* const   s   =   stlsoft::integer_to_base36_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), std::numeric_limits<i_t>::min() + 1, &n);
 
             XTESTS_TEST_INTEGER_EQUAL(14u, n);
-            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("-7vvvvvvvvvvvv", s);
+            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("-1y2p0ij32e8e7", s);
         }
 
         {
             char                buf[21];
             size_t              n;
-            char const* const   s   =   stlsoft::integer_to_base32_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), std::numeric_limits<i_t>::max(), &n);
+            char const* const   s   =   stlsoft::integer_to_base36_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), std::numeric_limits<i_t>::max(), &n);
 
             XTESTS_TEST_INTEGER_EQUAL(13u, n);
-            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("7vvvvvvvvvvvv", s);
+            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("1y2p0ij32e8e7", s);
         }
 
 #ifdef STLSOFT_CF_STATIC_ARRAY_SIZE_DETERMINATION_SUPPORT
 
         {
             char                buf[15];
-            char const* const   s   =   stlsoft::integer_to_base32_string(buf, std::numeric_limits<i_t>::max());
+            char const* const   s   =   stlsoft::integer_to_base36_string(buf, std::numeric_limits<i_t>::max());
 
-            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("7vvvvvvvvvvvv", s);
+            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("1y2p0ij32e8e7", s);
         }
 #endif
     }
@@ -581,7 +580,7 @@ static void test_limits()
         {
             char                buf[21];
             size_t              n;
-            char const* const   s   =   stlsoft::integer_to_base32_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), std::numeric_limits<i_t>::min(), &n);
+            char const* const   s   =   stlsoft::integer_to_base36_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), std::numeric_limits<i_t>::min(), &n);
 
             XTESTS_TEST_INTEGER_EQUAL(1u, n);
             XTESTS_TEST_MULTIBYTE_STRING_EQUAL("0", s);
@@ -590,19 +589,19 @@ static void test_limits()
         {
             char                buf[21];
             size_t              n;
-            char const* const   s   =   stlsoft::integer_to_base32_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), std::numeric_limits<i_t>::max(), &n);
+            char const* const   s   =   stlsoft::integer_to_base36_string(&buf[0], STLSOFT_NUM_ELEMENTS(buf), std::numeric_limits<i_t>::max(), &n);
 
             XTESTS_TEST_INTEGER_EQUAL(13u, n);
-            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("fvvvvvvvvvvvv", s);
+            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("3w5e11264sgsf", s);
         }
 
 #ifdef STLSOFT_CF_STATIC_ARRAY_SIZE_DETERMINATION_SUPPORT
 
         {
             char                buf[14];
-            char const* const   s   =   stlsoft::integer_to_base32_string(buf, std::numeric_limits<i_t>::max());
+            char const* const   s   =   stlsoft::integer_to_base36_string(buf, std::numeric_limits<i_t>::max());
 
-            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("fvvvvvvvvvvvv", s);
+            XTESTS_TEST_MULTIBYTE_STRING_EQUAL("3w5e11264sgsf", s);
         }
 #endif
     }

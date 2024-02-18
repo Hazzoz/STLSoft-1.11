@@ -91,7 +91,8 @@ namespace stlsoft
 
 /// Limits-traits class template that specifies the maximum length of
 /// integer-to-string conversion strings, for octal, decimal,
-/// hexadecimal, and duotrigesimal (base-32) conversion of integral types.
+/// hexadecimal, duotrigesimal (base-32), and hexatridecimal (base-36)
+/// conversion of integral types.
 ///
 /// \note The lengths given do <strong>not</strong> assume any kind of
 ///   integral promotion, such as occurs, for example, with variadic
@@ -134,6 +135,13 @@ struct integral_format_width_limits
             /// of any value in the range of the type, excluding the sign
             /// (for negative values; signed types only)
         ,   maxDuotrigesimalWidthWithoutSign
+            /// The maximum width of hexatridecimal (base-32) representation
+            /// of any value in the range of the type
+        ,   maxHexatridecimalWidth
+            /// The maximum width of hexatridecimal (base-32) representation
+            /// of any value in the range of the type, excluding the sign
+            /// (for negative values; signed types only)
+        ,   maxHexatridecimalWidthWithoutSign
     };
 };
 
@@ -155,6 +163,8 @@ struct integral_format_width_limits<ss_sint8_t>
         ,   maxHexadecimalWidthWithoutSign      =   2
         ,   maxDuotrigesimalWidth               =   3
         ,   maxDuotrigesimalWidthWithoutSign    =   2
+        ,   maxHexatridecimalWidth              =   3
+        ,   maxHexatridecimalWidthWithoutSign   =   2
     };
 };
 
@@ -171,6 +181,8 @@ struct integral_format_width_limits<ss_uint8_t>
         ,   maxHexadecimalWidthWithoutSign      =   2
         ,   maxDuotrigesimalWidth               =   2
         ,   maxDuotrigesimalWidthWithoutSign    =   2
+        ,   maxHexatridecimalWidth              =   2
+        ,   maxHexatridecimalWidthWithoutSign   =   2
     };
 };
 
@@ -187,6 +199,8 @@ struct integral_format_width_limits<ss_sint16_t>
         ,   maxHexadecimalWidthWithoutSign      =   4
         ,   maxDuotrigesimalWidth               =   5
         ,   maxDuotrigesimalWidthWithoutSign    =   4
+        ,   maxHexatridecimalWidth              =   4
+        ,   maxHexatridecimalWidthWithoutSign   =   3
     };
 };
 
@@ -203,6 +217,8 @@ struct integral_format_width_limits<ss_uint16_t>
         ,   maxHexadecimalWidthWithoutSign      =   4
         ,   maxDuotrigesimalWidth               =   4
         ,   maxDuotrigesimalWidthWithoutSign    =   4
+        ,   maxHexatridecimalWidth              =   4
+        ,   maxHexatridecimalWidthWithoutSign   =   4
     };
 };
 
@@ -219,6 +235,8 @@ struct integral_format_width_limits<ss_sint32_t>
         ,   maxHexadecimalWidthWithoutSign      =   8
         ,   maxDuotrigesimalWidth               =   8
         ,   maxDuotrigesimalWidthWithoutSign    =   7
+        ,   maxHexatridecimalWidth              =   7
+        ,   maxHexatridecimalWidthWithoutSign   =   6
     };
 };
 
@@ -235,6 +253,8 @@ struct integral_format_width_limits<ss_uint32_t>
         ,   maxHexadecimalWidthWithoutSign      =   8
         ,   maxDuotrigesimalWidth               =   7
         ,   maxDuotrigesimalWidthWithoutSign    =   7
+        ,   maxHexatridecimalWidth              =   7
+        ,   maxHexatridecimalWidthWithoutSign   =   7
     };
 };
 
@@ -251,6 +271,8 @@ struct integral_format_width_limits<ss_sint64_t>
         ,   maxHexadecimalWidthWithoutSign      =   16
         ,   maxDuotrigesimalWidth               =   14
         ,   maxDuotrigesimalWidthWithoutSign    =   13
+        ,   maxHexatridecimalWidth              =   14
+        ,   maxHexatridecimalWidthWithoutSign   =   13
     };
 };
 
@@ -267,6 +289,8 @@ struct integral_format_width_limits<ss_uint64_t>
         ,   maxHexadecimalWidthWithoutSign      =   16
         ,   maxDuotrigesimalWidth               =   13
         ,   maxDuotrigesimalWidthWithoutSign    =   13
+        ,   maxHexatridecimalWidth              =   13
+        ,   maxHexatridecimalWidthWithoutSign   =   13
     };
 };
 
