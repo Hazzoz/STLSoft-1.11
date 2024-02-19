@@ -1,14 +1,14 @@
 /* /////////////////////////////////////////////////////////////////////////
- * File:        stlsoft/string/static_string.hpp (originally MStkStr.h, ::SynesisDev)
+ * File:    stlsoft/string/static_string.hpp (originally MStkStr.h, ::SynesisDev)
  *
- * Purpose:     basic_static_string class template.
+ * Purpose: basic_static_string class template.
  *
- * Created:     11th June 1994
- * Updated:     17th February 2024
+ * Created: 11th June 1994
+ * Updated: 19th February 2024
  *
- * Thanks:      To Cláudio Albuquerque for supplying the pop_back() member.
+ * Thanks:  To Cláudio Albuquerque for supplying the pop_back() member.
  *
- * Home:        http://stlsoft.org/
+ * Home:    http://stlsoft.org/
  *
  * Copyright (c) 2019-2024, Matthew Wilson and Synesis Information Systems
  * Copyright (c) 1994-2019, Matthew Wilson and Synesis Software
@@ -55,9 +55,9 @@
 
 #ifndef STLSOFT_DOCUMENTATION_SKIP_SECTION
 # define STLSOFT_VER_STLSOFT_STRING_HPP_STATIC_STRING_MAJOR    5
-# define STLSOFT_VER_STLSOFT_STRING_HPP_STATIC_STRING_MINOR    1
+# define STLSOFT_VER_STLSOFT_STRING_HPP_STATIC_STRING_MINOR    2
 # define STLSOFT_VER_STLSOFT_STRING_HPP_STATIC_STRING_REVISION 1
-# define STLSOFT_VER_STLSOFT_STRING_HPP_STATIC_STRING_EDIT     223
+# define STLSOFT_VER_STLSOFT_STRING_HPP_STATIC_STRING_EDIT     224
 #endif /* !STLSOFT_DOCUMENTATION_SKIP_SECTION */
 
 
@@ -92,6 +92,9 @@
 #endif /* !STLSOFT_INCL_STLSOFT_MEMORY_HPP_AUTO_BUFFER */
 #ifndef STLSOFT_INCL_STLSOFT_MEMORY_UTIL_HPP_ALLOCATOR_SELECTOR
 # include <stlsoft/memory/util/allocator_selector.hpp>
+#ifndef STLSOFT_INCL_STLSOFT_UTIL_HPP_MINMAX
+# include <stlsoft/util/minmax.hpp>
+#endif /* !STLSOFT_INCL_STLSOFT_UTIL_HPP_MINMAX */
 #endif /* !STLSOFT_INCL_STLSOFT_MEMORY_UTIL_HPP_ALLOCATOR_SELECTOR */
 #ifndef STLSOFT_INCL_STLSOFT_UTIL_HPP_STD_SWAP
 # include <stlsoft/util/std_swap.hpp>
@@ -105,6 +108,10 @@
 #ifndef STLSOFT_INCL_STLSOFT_UTIL_STREAMS_HPP_STRING_INSERTION
 # include <stlsoft/util/streams/string_insertion.hpp>
 #endif /* !STLSOFT_INCL_STLSOFT_UTIL_STREAMS_HPP_STRING_INSERTION */
+#ifndef STLSOFT_INCL_STLSOFT_UTIL_STRING_H_SNPRINTF
+# include <stlsoft/util/string/snprintf.h>
+#endif /* !STLSOFT_INCL_STLSOFT_UTIL_STRING_H_SNPRINTF */
+
 
 #ifndef STLSOFT_INCL_STLSOFT_QUALITY_H_CONTRACT
 # include <stlsoft/quality/contract.h>
@@ -116,7 +123,7 @@
 #ifdef STLSOFT_CF_EXCEPTION_SUPPORT
 # ifndef STLSOFT_INCL_STDEXCEPT
 #  define STLSOFT_INCL_STDEXCEPT
-#  include <stdexcept>                  // for std::out_of_range
+#  include <stdexcept>
 # endif /* !STLSOFT_INCL_STDEXCEPT */
 #endif /* !STLSOFT_CF_EXCEPTION_SUPPORT */
 
@@ -142,10 +149,16 @@ namespace stlsoft
  * \tparam T TBC
  *
  * \param C The character type
- * \param V_internalSize The number of characters in the fixed-side buffer, not including the null-terminator
- * \param T The traits type. On translators that support default template arguments this is defaulted to char_traits<C>
+ * \param V_internalSize The number of characters in the fixed-side buffer,
+ *   not including the null-terminator
+ * \param T The traits type. On translators that support default template
+ *   arguments this is defaulted to stlsoft::char_traits<C>
  *
  * \ingroup group__library__String
+ *
+ * \exception std::length_error Possibly thrown by any method not marked
+ *   `noexcept` as a result of an intended operation that would exceed the
+ *   internal storage size (V_internalSize)
  */
 template <
     ss_typename_param_k C
@@ -200,20 +213,20 @@ public:
          ss_typename_type_k
 #endif /* compiler */
                        pointer_iterator<
-                            value_type
-                            ,   pointer
-                            ,   reference
-                            >::type                         iterator;
+        value_type
+    ,   pointer
+    ,   reference
+    >::type                                                 iterator;
     /// The non-mutating (const) iterator type
     typedef
 #if !defined(STLSOFT_COMPILER_IS_BORLAND)
          ss_typename_type_k
 #endif /* compiler */
                        pointer_iterator<
-                            value_type const
-                            ,   const_pointer
-                            ,   const_reference
-                            >::type                         const_iterator;
+    value_type const
+    ,   const_pointer
+    ,   const_reference
+    >::type                                                 const_iterator;
 #if defined(STLSOFT_LF_BIDIRECTIONAL_ITERATOR_SUPPORT)
     /// The mutating (non-const) reverse iterator type
     typedef ss_typename_type_k reverse_iterator_generator<
@@ -243,13 +256,13 @@ private:
 /// @{
 public:
     /// Default constructor
-    basic_static_string();
+    basic_static_string() STLSOFT_NOEXCEPT;
     /// Copy constructor
-    basic_static_string(class_type const& rhs);
+    basic_static_string(class_type const& rhs) STLSOFT_NOEXCEPT;
     /// Construct from the given string at the specified position
-    basic_static_string(class_type const& s, size_type pos);
+    basic_static_string(class_type const& s, size_type pos) STLSOFT_NOEXCEPT;
     /// Construct with \c n characters from the given string at the specified position
-    basic_static_string(class_type const& s, size_type pos, size_type n);
+    basic_static_string(class_type const& s, size_type pos, size_type n) STLSOFT_NOEXCEPT;
     /// Construct from the given character string
     basic_static_string(char_type const* s);
     /// Construct with \c n characters from the given character string
@@ -265,8 +278,9 @@ public:
     ///   requires that the distance of [first, last) does not exceed the
     ///   internal size
     ///
-    /// \exception std::length_error If exception-support is enable, this
-    ///   method
+    /// \exception std::length_error Thrown, when exception-support is
+    ///   enabled, in the case that
+    ///   `std::distance(first, last) > max_size()`
     ///
 #if !defined(STLSOFT_CF_MEMBER_TEMPLATE_RANGE_METHOD_SUPPORT)
     basic_static_string(char_type const* first, char_type const* last);
@@ -275,16 +289,12 @@ public:
     basic_static_string(II first, II last)
         : m_length(static_cast<ss_size_t>(STLSOFT_NS_QUAL_STD(distance)(first, last)))
     {
-# ifdef STLSOFT_CF_EXCEPTION_SUPPORT
-        if (!(max_size() < m_length))
+        if (!validate_new_length_(m_length, "construction", "range"))
         {
-            STLSOFT_THROW_X(stlsoft_ns_qual_std(length_error)("range too large"));
+            STLSOFT_MESSAGE_ASSERT("operation would result in static_string that is too large for static limit", !(max_size() < m_length));
         }
-# else /* ? STLSOFT_CF_EXCEPTION_SUPPORT */
-        STLSOFT_MESSAGE_ASSERT("incident string too large for static_string construction", !(max_size() < m_length));
-# endif /* STLSOFT_CF_EXCEPTION_SUPPORT */
 
-        buffer_type_    buffer(m_length);
+        buffer_type_ buffer(m_length);
 
         STLSOFT_NS_QUAL_STD(copy)(first, last, buffer.begin());
 
@@ -308,7 +318,7 @@ public:
     /// Assigns with \c n characters from the given character string at the specified position
     class_type& assign(class_type const& str, size_type pos, size_type n);
     /// Assigns from the given string
-    class_type& assign(class_type const& str);
+    class_type& assign(class_type const& str) STLSOFT_NOEXCEPT;
     /// Assigns \c n characters with the value \c ch
     class_type& assign(size_type n, char_type c);
     /// Assigns from the range [first:last)
@@ -333,11 +343,11 @@ public:
 #endif /* STLSOFT_CF_MEMBER_TEMPLATE_RANGE_METHOD_SUPPORT */
 
     /// Copy assignment operator
-    class_type const& operator =(class_type const& rhs);
+    class_type const& operator =(class_type const& rhs) STLSOFT_NOEXCEPT;
     /// Assignment operator
     class_type const& operator =(char_type const* s);
     /// Assignment operator
-    class_type const& operator =(char_type ch);
+    class_type const& operator =(char_type ch) STLSOFT_NOEXCEPT;
 /// @}
 
 /// \name Appending
@@ -384,16 +394,16 @@ public:
     /// Appends a single character
     void push_back(char_type ch);
     /// Removes the last character
-    void pop_back();
+    void pop_back() STLSOFT_NOEXCEPT;
 /// @}
 
-/// \name Operations
+/// \name Modifiers
 /// @{
 public:
     /// Reserves at least n characters
     void reserve(size_type n);
     /// Swaps the contents between \c this and \c other
-    void swap(class_type& other);
+    void swap(class_type& other) STLSOFT_NOEXCEPT;
 
     /// Resizes the string
     ///
@@ -402,48 +412,48 @@ public:
     void resize(size_type n, value_type ch = value_type());
 
     /// Empties the string
-    void clear();
+    void clear() STLSOFT_NOEXCEPT;
 /// @}
 
 /// \name Attributes
 /// @{
 public:
     /// The number of elements in the string
-    size_type size() const;
+    size_type size() const STLSOFT_NOEXCEPT;
     /// The maximum number of elements that can be stored in the string
-    static size_type max_size();
+    static size_type max_size() STLSOFT_NOEXCEPT;
     /// The number of elements in the string
-    size_type length() const;
+    size_type length() const STLSOFT_NOEXCEPT;
     /// The storage currently allocated by the string
-    size_type capacity() const;
+    size_type capacity() const STLSOFT_NOEXCEPT;
     /// Indicates whether the string is empty
-    ss_bool_t empty() const;
+    ss_bool_t empty() const STLSOFT_NOEXCEPT;
 /// @}
 
 /// \name Comparison
 /// @{
 public:
     /// Compares \c this with the given string
-    ss_sint_t compare(size_type pos, size_type n, value_type const* s, size_type cchRhs) const;
+    ss_sint_t compare(size_type pos, size_type n, value_type const* s, size_type cchRhs) const STLSOFT_NOEXCEPT;
     /// Compares \c this with the given string
-    ss_sint_t compare(size_type pos, size_type n, value_type const* s) const;
+    ss_sint_t compare(size_type pos, size_type n, value_type const* s) const STLSOFT_NOEXCEPT;
     /// Compares \c this with the given string
-    ss_sint_t compare(value_type const* s) const;
+    ss_sint_t compare(value_type const* s) const STLSOFT_NOEXCEPT;
     /// Compares \c this with the given string
-    ss_sint_t compare(size_type pos, size_type n, class_type const& rhs, size_type posRhs, size_type cchRhs) const;
+    ss_sint_t compare(size_type pos, size_type n, class_type const& rhs, size_type posRhs, size_type cchRhs) const STLSOFT_NOEXCEPT;
     /// Compares \c this with the given string
-    ss_sint_t compare(size_type pos, size_type n, class_type const& rhs) const;
+    ss_sint_t compare(size_type pos, size_type n, class_type const& rhs) const STLSOFT_NOEXCEPT;
     /// Compares \c this with the given string
-    ss_sint_t compare(class_type const& rhs) const;
+    ss_sint_t compare(class_type const& rhs) const STLSOFT_NOEXCEPT;
 /// @}
 
 /// \name Accessors
 /// @{
 public:
     /// Returns mutable reference at the given index
-    reference       operator [](size_type index);
+    reference       operator [](size_type index) STLSOFT_NOEXCEPT;
     /// Returns non-mutable (const) reference at the given index
-    const_reference operator [](size_type index) const;
+    const_reference operator [](size_type index) const STLSOFT_NOEXCEPT;
 
 #ifdef STLSOFT_CF_EXCEPTION_SUPPORT
     /// Returns mutable (non-const) reference at the given index
@@ -452,21 +462,26 @@ public:
     reference               at(size_type index);
     /// Returns non-mutable (const) reference at the given index
     ///
-    /// \note Throws std::out_of_range if index >= size()
+    /// \note Throws std::out_of_range if index > size()
     const_reference         at(size_type index) const;
+
+    /// Returns a string of maximum length cch, from the position pos
+    class_type              substr(size_type pos, size_type cch) const;
+    class_type              substr(size_type pos) const;
+    class_type              substr() const;
 #endif /* !STLSOFT_CF_EXCEPTION_SUPPORT */
 
     /// Returns null-terminated non-mutable (const) pointer to string data
-    value_type const*       c_str() const;
+    value_type const*       c_str() const STLSOFT_NOEXCEPT;
     /// Returns non-mutable (const) pointer to string data
-    value_type const*       data() const;
+    value_type const*       data() const STLSOFT_NOEXCEPT;
 
     /// Copies elements into the given destination
     size_type copy(
         value_type* dest
     ,   size_type   cch
     ,   size_type   pos = 0
-    ) const;
+    ) const STLSOFT_NOEXCEPT;
 /// @}
 
 /// \name Iteration
@@ -475,53 +490,96 @@ public:
     /// Begins the iteration
     ///
     /// \return A non-mutable (const) iterator representing the start of the sequence
-    const_iterator          begin() const;
+    const_iterator          begin() const STLSOFT_NOEXCEPT;
     /// Ends the iteration
     ///
     /// \return A non-mutable (const) iterator representing the end of the sequence
-    const_iterator          end() const;
+    const_iterator          end() const STLSOFT_NOEXCEPT;
     /// Begins the iteration
     ///
     /// \return An iterator representing the start of the sequence
-    iterator                begin();
+    iterator                begin() STLSOFT_NOEXCEPT;
     /// Ends the iteration
     ///
     /// \return An iterator representing the end of the sequence
-    iterator                end();
+    iterator                end() STLSOFT_NOEXCEPT;
 
 #if defined(STLSOFT_LF_BIDIRECTIONAL_ITERATOR_SUPPORT)
     /// Begins the reverse iteration
     ///
     /// \return A non-mutable (const) iterator representing the start of the reverse sequence
-    const_reverse_iterator  rbegin() const;
+    const_reverse_iterator  rbegin() const STLSOFT_NOEXCEPT;
     /// Ends the reverse iteration
     ///
     /// \return A non-mutable (const) iterator representing the end of the reverse sequence
-    const_reverse_iterator  rend() const;
+    const_reverse_iterator  rend() const STLSOFT_NOEXCEPT;
     /// Begins the reverse iteration
     ///
     /// \return An iterator representing the start of the reverse sequence
-    reverse_iterator        rbegin();
+    reverse_iterator        rbegin() STLSOFT_NOEXCEPT;
     /// Ends the reverse iteration
     ///
     /// \return An iterator representing the end of the reverse sequence
-    reverse_iterator        rend();
+    reverse_iterator        rend() STLSOFT_NOEXCEPT;
 #endif /* STLSOFT_LF_BIDIRECTIONAL_ITERATOR_SUPPORT */
 /// @}
 
 /// \name Implementation
 /// @{
 private:
-    static size_type validate_new_length_(size_type len, char const* message);
+    // If exception-support is enabled , this will throw an instance
+    // of `std::length_error` with a suitable message from the given
+    // qualifier; otherwise, will return `false` (such that this can be used
+    // within a contract enforcement)
+    //
+    // \exception std::length_error
+    static
+    bool
+    validate_new_length_(
+        size_type       new_length
+    ,   char const*  /* context */
+    ,   char const*  /* qualifier */
+    )
+    {
+        if (max_size() < new_length)
+        {
+# ifdef STLSOFT_CF_EXCEPTION_SUPPORT
+
+            char            message[101];
+            ss_size_t const n = stlsoft_C_snprintf(
+                    &message[0]
+                ,   STLSOFT_NUM_ELEMENTS(message)
+                ,   "operation would result in static_string (of %lu element(s)) that is too large for static limit (of %lu element(s))"
+                ,   new_length
+                ,   max_size()
+                );
+
+            STLSOFT_ASSERT(0 != n);
+            STLSOFT_SUPPRESS_UNUSED(n);
+
+            STLSOFT_THROW_X(STLSOFT_NS_QUAL_STD(length_error)(message));
+# else /* ? STLSOFT_CF_EXCEPTION_SUPPORT */
+
+            return false;
+# endif /* STLSOFT_CF_EXCEPTION_SUPPORT */
+        }
+
+        return true;
+    }
 
     // Length
-    size_type length_() const;
+    size_type length_() const STLSOFT_NOEXCEPT;
 
     // Invariance
-    ss_bool_t is_valid() const;
+    ss_bool_t is_valid() const STLSOFT_NOEXCEPT;
 
     // Comparison
-    static ss_sint_t compare_(char_type const* lhs, size_type lhs_len, char_type const* rhs, size_type rhs_len);
+    static ss_sint_t compare_(
+        char_type const*    lhs
+    ,   size_type           lhs_len
+    ,   char_type const*    rhs
+    ,   size_type           rhs_len
+    ) STLSOFT_NOEXCEPT;
 
     // Assignment
 #if defined(STLSOFT_CF_MEMBER_TEMPLATE_RANGE_METHOD_SUPPORT)
@@ -534,6 +592,13 @@ private:
     class_type& assign_(II first, II last, STLSOFT_NS_QUAL_STD(input_iterator_tag))
 # endif /* compiler */
     {
+        size_type const new_length = STLSOFT_NS_QUAL_STD(distance)(first, last);
+
+        if (!validate_new_length_(new_length, "assignment", "range"))
+        {
+            STLSOFT_MESSAGE_ASSERT("operation would result in static_string that is too large for static limit", !(max_size() < new_length));
+        }
+
         STLSOFT_NS_QUAL_STD(copy)(first, last, STLSOFT_NS_QUAL_STD(back_inserter)(*this));
 
         return *this;
@@ -547,9 +612,17 @@ private:
     class_type& assign_(II first, II last, STLSOFT_NS_QUAL_STD(forward_iterator_tag))
 # endif /* compiler */
     {
-        buffer_type_    buffer(static_cast<ss_size_t>(STLSOFT_NS_QUAL_STD(distance)(first, last)));
+        size_type const new_length = STLSOFT_NS_QUAL_STD(distance)(first, last);
+
+        if (!validate_new_length_(new_length, "assignment", "range"))
+        {
+            STLSOFT_MESSAGE_ASSERT("operation would result in static_string that is too large for static limit", !(max_size() < new_length));
+        }
+
+        buffer_type_ buffer(new_length);
 
         STLSOFT_NS_QUAL_STD(copy)(first, last, buffer.begin());
+
         assign(buffer.data(), buffer.size());
 
         return *this;
@@ -617,7 +690,7 @@ ss_bool_t
 operator ==(
     basic_static_string<C, V_internalSize, T> const&    lhs
 ,   basic_static_string<C, V_internalSize, T> const&    rhs
-)
+) STLSOFT_NOEXCEPT
 {
     return lhs.compare(rhs) == 0;
 }
@@ -633,12 +706,12 @@ ss_bool_t
 operator ==(
     basic_static_string<C, V_internalSize, T> const&                                lhs
 ,   ss_typename_type_k basic_static_string<C, V_internalSize, T>::char_type const*  rhs
-)
+) STLSOFT_NOEXCEPT
 #else /* ? STLSOFT_CF_TEMPLATE_OUTOFCLASSFN_QUALIFIED_TYPE_SUPPORT */
 operator ==(
     basic_static_string<C, V_internalSize, T> const&    lhs
 ,   C const*                                            rhs
-)
+) STLSOFT_NOEXCEPT
 #endif /* STLSOFT_CF_TEMPLATE_OUTOFCLASSFN_QUALIFIED_TYPE_SUPPORT */
 {
     return lhs.compare(rhs) == 0;
@@ -655,12 +728,12 @@ ss_bool_t
 operator ==(
     ss_typename_type_k basic_static_string<C, V_internalSize, T>::char_type const*  lhs
 ,   basic_static_string<C, V_internalSize, T> const&                                rhs
-)
+) STLSOFT_NOEXCEPT
 #else /* ? STLSOFT_CF_TEMPLATE_OUTOFCLASSFN_QUALIFIED_TYPE_SUPPORT */
 operator ==(
     C const*                                            lhs
 ,   basic_static_string<C, V_internalSize, T> const&    rhs
-)
+) STLSOFT_NOEXCEPT
 #endif /* STLSOFT_CF_TEMPLATE_OUTOFCLASSFN_QUALIFIED_TYPE_SUPPORT */
 {
     return rhs.compare(lhs) == 0;
@@ -678,7 +751,7 @@ ss_bool_t
 operator !=(
     basic_static_string<C, V_internalSize, T> const&    lhs
 ,   basic_static_string<C, V_internalSize, T> const&    rhs
-)
+) STLSOFT_NOEXCEPT
 {
     return lhs.compare(rhs) != 0;
 }
@@ -693,12 +766,12 @@ ss_bool_t
 operator !=(
     basic_static_string<C, V_internalSize, T> const&                                lhs
 ,   ss_typename_type_k basic_static_string<C, V_internalSize, T>::char_type const*  rhs
-)
+) STLSOFT_NOEXCEPT
 #else /* ? STLSOFT_CF_TEMPLATE_OUTOFCLASSFN_QUALIFIED_TYPE_SUPPORT */
 operator !=(
     basic_static_string<C, V_internalSize, T> const&    lhs
 ,   C const*                                            rhs
-)
+) STLSOFT_NOEXCEPT
 #endif /* STLSOFT_CF_TEMPLATE_OUTOFCLASSFN_QUALIFIED_TYPE_SUPPORT */
 {
     return lhs.compare(rhs) != 0;
@@ -714,12 +787,12 @@ ss_bool_t
 operator !=(
     ss_typename_type_k basic_static_string<C, V_internalSize, T>::char_type const*  lhs
 ,   basic_static_string<C, V_internalSize, T> const&                                rhs
-)
+) STLSOFT_NOEXCEPT
 #else /* ? STLSOFT_CF_TEMPLATE_OUTOFCLASSFN_QUALIFIED_TYPE_SUPPORT */
 operator !=(
     C const*                                            lhs
 ,   basic_static_string<C, V_internalSize, T> const&    rhs
-)
+) STLSOFT_NOEXCEPT
 #endif /* STLSOFT_CF_TEMPLATE_OUTOFCLASSFN_QUALIFIED_TYPE_SUPPORT */
 {
     return rhs.compare(lhs) != 0;
@@ -737,7 +810,7 @@ ss_bool_t
 operator <(
     basic_static_string<C, V_internalSize, T> const&    lhs
 ,   basic_static_string<C, V_internalSize, T> const&    rhs
-)
+) STLSOFT_NOEXCEPT
 {
     return lhs.compare(rhs) < 0;
 }
@@ -753,12 +826,12 @@ ss_bool_t
 operator <(
     basic_static_string<C, V_internalSize, T> const&                                lhs
 ,   ss_typename_type_k basic_static_string<C, V_internalSize, T>::char_type const*  rhs
-)
+) STLSOFT_NOEXCEPT
 #else /* ? STLSOFT_CF_TEMPLATE_OUTOFCLASSFN_QUALIFIED_TYPE_SUPPORT */
 operator <(
     basic_static_string<C, V_internalSize, T> const&    lhs
 ,   C const*                                            rhs
-)
+) STLSOFT_NOEXCEPT
 #endif /* STLSOFT_CF_TEMPLATE_OUTOFCLASSFN_QUALIFIED_TYPE_SUPPORT */
 {
     return lhs.compare(rhs) < 0;
@@ -775,12 +848,12 @@ ss_bool_t
 operator <(
     ss_typename_type_k basic_static_string<C, V_internalSize, T>::char_type const*  lhs
 ,   basic_static_string<C, V_internalSize, T> const&                                rhs
-)
+) STLSOFT_NOEXCEPT
 #else /* ? STLSOFT_CF_TEMPLATE_OUTOFCLASSFN_QUALIFIED_TYPE_SUPPORT */
 operator <(
     C const*                                            lhs
 ,   basic_static_string<C, V_internalSize, T> const&    rhs
-)
+) STLSOFT_NOEXCEPT
 #endif /* STLSOFT_CF_TEMPLATE_OUTOFCLASSFN_QUALIFIED_TYPE_SUPPORT */
 {
     return rhs.compare(lhs) > 0;
@@ -798,7 +871,7 @@ ss_bool_t
 operator <=(
     basic_static_string<C, V_internalSize, T> const&    lhs
 ,   basic_static_string<C, V_internalSize, T> const&    rhs
-)
+) STLSOFT_NOEXCEPT
 {
     return lhs.compare(rhs) <= 0;
 }
@@ -813,12 +886,12 @@ ss_bool_t
 operator <=(
     basic_static_string<C, V_internalSize, T> const&                                lhs
 ,   ss_typename_type_k basic_static_string<C, V_internalSize, T>::char_type const*  rhs
-)
+) STLSOFT_NOEXCEPT
 #else /* ? STLSOFT_CF_TEMPLATE_OUTOFCLASSFN_QUALIFIED_TYPE_SUPPORT */
 operator <=(
     basic_static_string<C, V_internalSize, T> const&    lhs
 ,   C const*                                            rhs
-)
+) STLSOFT_NOEXCEPT
 #endif /* STLSOFT_CF_TEMPLATE_OUTOFCLASSFN_QUALIFIED_TYPE_SUPPORT */
 {
     return lhs.compare(rhs) <= 0;
@@ -834,12 +907,12 @@ ss_bool_t
 operator <=(
     ss_typename_type_k basic_static_string<C, V_internalSize, T>::char_type const*  lhs
 ,   basic_static_string<C, V_internalSize, T> const&                                rhs
-)
+) STLSOFT_NOEXCEPT
 #else /* ? STLSOFT_CF_TEMPLATE_OUTOFCLASSFN_QUALIFIED_TYPE_SUPPORT */
 operator <=(
     C const*                                            lhs
 ,   basic_static_string<C, V_internalSize, T> const&    rhs
-)
+) STLSOFT_NOEXCEPT
 #endif /* STLSOFT_CF_TEMPLATE_OUTOFCLASSFN_QUALIFIED_TYPE_SUPPORT */
 {
     return rhs.compare(lhs) >= 0;
@@ -857,7 +930,7 @@ ss_bool_t
 operator >(
     basic_static_string<C, V_internalSize, T> const&    lhs
 ,   basic_static_string<C, V_internalSize, T> const&    rhs
-)
+) STLSOFT_NOEXCEPT
 {
     return lhs.compare(rhs) > 0;
 }
@@ -872,12 +945,12 @@ ss_bool_t
 operator >(
     basic_static_string<C, V_internalSize, T> const&                                lhs
 ,   ss_typename_type_k basic_static_string<C, V_internalSize, T>::char_type const*  rhs
-)
+) STLSOFT_NOEXCEPT
 #else /* ? STLSOFT_CF_TEMPLATE_OUTOFCLASSFN_QUALIFIED_TYPE_SUPPORT */
 operator >(
     basic_static_string<C, V_internalSize, T> const&    lhs
 ,   C const*                                            rhs
-)
+) STLSOFT_NOEXCEPT
 #endif /* STLSOFT_CF_TEMPLATE_OUTOFCLASSFN_QUALIFIED_TYPE_SUPPORT */
 {
     return lhs.compare(rhs) > 0;
@@ -893,12 +966,12 @@ ss_bool_t
 operator >(
     ss_typename_type_k basic_static_string<C, V_internalSize, T>::char_type const*  lhs
 ,   basic_static_string<C, V_internalSize, T> const&                                rhs
-)
+) STLSOFT_NOEXCEPT
 #else /* ? STLSOFT_CF_TEMPLATE_OUTOFCLASSFN_QUALIFIED_TYPE_SUPPORT */
 operator >(
     C const*                                            lhs
 ,   basic_static_string<C, V_internalSize, T> const&    rhs
-)
+) STLSOFT_NOEXCEPT
 #endif /* STLSOFT_CF_TEMPLATE_OUTOFCLASSFN_QUALIFIED_TYPE_SUPPORT */
 {
     return rhs.compare(lhs) < 0;
@@ -916,7 +989,7 @@ ss_bool_t
 operator >=(
     basic_static_string<C, V_internalSize, T> const&    lhs
 ,   basic_static_string<C, V_internalSize, T> const&    rhs
-)
+) STLSOFT_NOEXCEPT
 {
     return lhs.compare(rhs) >= 0;
 }
@@ -931,9 +1004,12 @@ ss_bool_t
 operator >=(
     basic_static_string<C, V_internalSize, T> const&                                lhs
 ,   ss_typename_type_k basic_static_string<C, V_internalSize, T>::char_type const*  rhs
-)
+) STLSOFT_NOEXCEPT
 #else /* ? STLSOFT_CF_TEMPLATE_OUTOFCLASSFN_QUALIFIED_TYPE_SUPPORT */
-operator >=(basic_static_string<C, V_internalSize, T> const& lhs, C const* rhs)
+operator >=(
+    basic_static_string<C, V_internalSize, T> const&    lhs
+,   C const*                                            rhs
+) STLSOFT_NOEXCEPT
 #endif /* STLSOFT_CF_TEMPLATE_OUTOFCLASSFN_QUALIFIED_TYPE_SUPPORT */
 {
     return lhs.compare(rhs) >= 0;
@@ -949,12 +1025,12 @@ ss_bool_t
 operator >=(
     ss_typename_type_k basic_static_string<C, V_internalSize, T>::char_type const*  lhs
 ,   basic_static_string<C, V_internalSize, T> const&                                rhs
-)
+) STLSOFT_NOEXCEPT
 #else /* ? STLSOFT_CF_TEMPLATE_OUTOFCLASSFN_QUALIFIED_TYPE_SUPPORT */
 operator >=(
     C const*                                            lhs
 ,   basic_static_string<C, V_internalSize, T> const&    rhs
-)
+) STLSOFT_NOEXCEPT
 #endif /* STLSOFT_CF_TEMPLATE_OUTOFCLASSFN_QUALIFIED_TYPE_SUPPORT */
 {
     return rhs.compare(lhs) <= 0;
@@ -972,7 +1048,12 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline void swap(basic_static_string<C, V_internalSize, T>& lhs, basic_static_string<C, V_internalSize, T>& rhs)
+inline
+void
+swap(
+    basic_static_string<C, V_internalSize, T>&  lhs
+,   basic_static_string<C, V_internalSize, T>&  rhs
+) STLSOFT_NOEXCEPT
 {
     lhs.swap(rhs);
 }
@@ -988,12 +1069,16 @@ inline void swap(basic_static_string<C, V_internalSize, T>& lhs, basic_static_st
 
 #ifndef STLSOFT_DOCUMENTATION_SKIP_SECTION
 template <ss_size_t V_internalSize, ss_typename_param_k T >
-inline ss_char_a_t const* c_str_ptr_null_a(STLSOFT_NS_QUAL(basic_static_string)<ss_char_a_t, V_internalSize, T> const& s)
+inline
+ss_char_a_t const*
+c_str_ptr_null_a(STLSOFT_NS_QUAL(basic_static_string)<ss_char_a_t, V_internalSize, T> const& s) STLSOFT_NOEXCEPT
 {
     return (0 != s.length()) ? s.c_str() : NULL;
 }
 template <ss_size_t V_internalSize, ss_typename_param_k T >
-inline ss_char_w_t const* c_str_ptr_null_w(STLSOFT_NS_QUAL(basic_static_string)<ss_char_w_t, V_internalSize, T> const& s)
+inline
+ss_char_w_t const*
+c_str_ptr_null_w(STLSOFT_NS_QUAL(basic_static_string)<ss_char_w_t, V_internalSize, T> const& s) STLSOFT_NOEXCEPT
 {
     return (0 != s.length()) ? s.c_str() : NULL;
 }
@@ -1008,7 +1093,9 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline C const* c_str_ptr_null(STLSOFT_NS_QUAL(basic_static_string)<C, V_internalSize, T> const& s)
+inline
+C const*
+c_str_ptr_null(STLSOFT_NS_QUAL(basic_static_string)<C, V_internalSize, T> const& s) STLSOFT_NOEXCEPT
 {
     return (0 != s.length()) ? s.c_str() : NULL;
 }
@@ -1017,12 +1104,16 @@ inline C const* c_str_ptr_null(STLSOFT_NS_QUAL(basic_static_string)<C, V_interna
 
 #ifndef STLSOFT_DOCUMENTATION_SKIP_SECTION
 template <ss_size_t V_internalSize, ss_typename_param_k T >
-inline ss_char_a_t const* c_str_ptr_a(STLSOFT_NS_QUAL(basic_static_string)<ss_char_a_t, V_internalSize, T> const& s)
+inline
+ss_char_a_t const*
+c_str_ptr_a(STLSOFT_NS_QUAL(basic_static_string)<ss_char_a_t, V_internalSize, T> const& s) STLSOFT_NOEXCEPT
 {
     return s.c_str();
 }
 template <ss_size_t V_internalSize, ss_typename_param_k T >
-inline ss_char_w_t const* c_str_ptr_w(STLSOFT_NS_QUAL(basic_static_string)<ss_char_w_t, V_internalSize, T> const& s)
+inline
+ss_char_w_t const*
+c_str_ptr_w(STLSOFT_NS_QUAL(basic_static_string)<ss_char_w_t, V_internalSize, T> const& s) STLSOFT_NOEXCEPT
 {
     return s.c_str();
 }
@@ -1037,7 +1128,9 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline C const* c_str_ptr(STLSOFT_NS_QUAL(basic_static_string)<C, V_internalSize, T> const& s)
+inline
+C const*
+c_str_ptr(STLSOFT_NS_QUAL(basic_static_string)<C, V_internalSize, T> const& s) STLSOFT_NOEXCEPT
 {
     return s.c_str();
 }
@@ -1046,12 +1139,16 @@ inline C const* c_str_ptr(STLSOFT_NS_QUAL(basic_static_string)<C, V_internalSize
 
 #ifndef STLSOFT_DOCUMENTATION_SKIP_SECTION
 template <ss_size_t V_internalSize, ss_typename_param_k T >
-inline ss_char_a_t const* c_str_data_a(STLSOFT_NS_QUAL(basic_static_string)<ss_char_a_t, V_internalSize, T> const& s)
+inline
+ss_char_a_t const*
+c_str_data_a(STLSOFT_NS_QUAL(basic_static_string)<ss_char_a_t, V_internalSize, T> const& s) STLSOFT_NOEXCEPT
 {
     return s.data();
 }
 template <ss_size_t V_internalSize, ss_typename_param_k T >
-inline ss_char_w_t const* c_str_data_w(STLSOFT_NS_QUAL(basic_static_string)<ss_char_w_t, V_internalSize, T> const& s)
+inline
+ss_char_w_t const*
+c_str_data_w(STLSOFT_NS_QUAL(basic_static_string)<ss_char_w_t, V_internalSize, T> const& s) STLSOFT_NOEXCEPT
 {
     return s.data();
 }
@@ -1066,7 +1163,9 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline C const* c_str_data(STLSOFT_NS_QUAL(basic_static_string)<C, V_internalSize, T> const& s)
+inline
+C const*
+c_str_data(STLSOFT_NS_QUAL(basic_static_string)<C, V_internalSize, T> const& s) STLSOFT_NOEXCEPT
 {
     return s.data();
 }
@@ -1076,12 +1175,16 @@ inline C const* c_str_data(STLSOFT_NS_QUAL(basic_static_string)<C, V_internalSiz
 #ifndef STLSOFT_DOCUMENTATION_SKIP_SECTION
 
 template <ss_size_t V_internalSize, ss_typename_param_k T >
-inline ss_size_t c_str_len_a(STLSOFT_NS_QUAL(basic_static_string)<ss_char_a_t, V_internalSize, T> const& s)
+inline
+ss_size_t
+c_str_len_a(STLSOFT_NS_QUAL(basic_static_string)<ss_char_a_t, V_internalSize, T> const& s) STLSOFT_NOEXCEPT
 {
     return s.length();
 }
 template <ss_size_t V_internalSize, ss_typename_param_k T >
-inline ss_size_t c_str_len_w(STLSOFT_NS_QUAL(basic_static_string)<ss_char_w_t, V_internalSize, T> const& s)
+inline
+ss_size_t
+c_str_len_w(STLSOFT_NS_QUAL(basic_static_string)<ss_char_w_t, V_internalSize, T> const& s) STLSOFT_NOEXCEPT
 {
     return s.length();
 }
@@ -1097,7 +1200,9 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline ss_size_t c_str_len(STLSOFT_NS_QUAL(basic_static_string)<C, V_internalSize, T> const& s)
+inline
+ss_size_t
+c_str_len(STLSOFT_NS_QUAL(basic_static_string)<C, V_internalSize, T> const& s) STLSOFT_NOEXCEPT
 {
     return s.length();
 }
@@ -1153,7 +1258,10 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::size_type basic_static_string<C, V_internalSize, T>::length_() const
+inline
+ss_typename_type_ret_k
+basic_static_string<C, V_internalSize, T>::size_type
+basic_static_string<C, V_internalSize, T>::length_() const STLSOFT_NOEXCEPT
 {
     if (m_length == static_cast<ss_size_t>(-1))
     {
@@ -1172,7 +1280,7 @@ template <
 >
 inline
 ss_bool_t
-basic_static_string<C, V_internalSize, T>::is_valid() const
+basic_static_string<C, V_internalSize, T>::is_valid() const STLSOFT_NOEXCEPT
 {
     char_type const*        b  =   &m_buffer[0];
     char_type const* const  e  =   &m_buffer[STLSOFT_NUM_ELEMENTS(m_buffer)];
@@ -1205,7 +1313,8 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline basic_static_string<C, V_internalSize, T>::basic_static_string()
+inline
+basic_static_string<C, V_internalSize, T>::basic_static_string() STLSOFT_NOEXCEPT
     : m_length(static_cast<ss_size_t>(-1))
 {
     m_buffer[0]             =   '\0';
@@ -1219,10 +1328,11 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline basic_static_string<C, V_internalSize, T>::basic_static_string(class_type const& rhs)
-    : m_length(rhs.length())
+inline
+basic_static_string<C, V_internalSize, T>::basic_static_string(class_type const& rhs) STLSOFT_NOEXCEPT
+    : m_length(rhs.size())
 {
-    traits_type::copy(m_buffer, rhs.m_buffer, rhs.length());
+    traits_type::copy(m_buffer, rhs.m_buffer, rhs.size());
 
     m_buffer[m_length]      =   '\0';
     m_buffer[max_size()]    =   '\0';
@@ -1235,10 +1345,34 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline basic_static_string<C, V_internalSize, T>::basic_static_string(class_type const& rhs, size_type pos)
-    : m_length(rhs.length() - pos)
+inline
+basic_static_string<C, V_internalSize, T>::basic_static_string(
+    class_type const&   rhs
+,   size_type           pos
+) STLSOFT_NOEXCEPT
+    : m_length(rhs.size() - pos)
 {
-    STLSOFT_MESSAGE_ASSERT("incident string too large for static_string construction", !(max_size() < m_length));
+    traits_type::copy(m_buffer, rhs.m_buffer + pos, m_length);
+
+    m_buffer[m_length]      =   '\0';
+    m_buffer[max_size()]    =   '\0';
+
+    STLSOFT_ASSERT(is_valid());
+}
+
+template <
+    ss_typename_param_k C
+,   ss_size_t           V_internalSize
+,   ss_typename_param_k T
+>
+inline
+basic_static_string<C, V_internalSize, T>::basic_static_string(
+    class_type const&   rhs
+,   size_type           pos
+,   size_type           n
+) STLSOFT_NOEXCEPT
+    : m_length(minimum(n, rhs.size() - pos))
+{
 
     traits_type::copy(m_buffer, rhs.m_buffer + pos, m_length);
 
@@ -1253,28 +1387,14 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline basic_static_string<C, V_internalSize, T>::basic_static_string(class_type const& rhs, size_type pos, size_type n)
-    : m_length(n)
-{
-    STLSOFT_MESSAGE_ASSERT("incident string too large for static_string construction", !(max_size() < n));
-
-    traits_type::copy(m_buffer, rhs.m_buffer + pos, n);
-
-    m_buffer[m_length]      =   '\0';
-    m_buffer[max_size()]    =   '\0';
-
-    STLSOFT_ASSERT(is_valid());
-}
-
-template <
-    ss_typename_param_k C
-,   ss_size_t           V_internalSize
-,   ss_typename_param_k T
->
-inline basic_static_string<C, V_internalSize, T>::basic_static_string(char_type const* s)
+inline
+basic_static_string<C, V_internalSize, T>::basic_static_string(char_type const* s)
     : m_length((NULL != s) ? traits_type::length(s) : 0)
 {
-    STLSOFT_MESSAGE_ASSERT("incident string too large for static_string construction", !(max_size() < m_length));
+    if (!validate_new_length_(m_length, "construction", "c-style string"))
+    {
+        STLSOFT_MESSAGE_ASSERT("operation would result in static_string that is too large for static limit", !(max_size() < m_length));
+    }
 
     traits_type::copy(m_buffer, s, m_length);
 
@@ -1289,10 +1409,17 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline basic_static_string<C, V_internalSize, T>::basic_static_string(char_type const* s, size_type n)
+inline
+basic_static_string<C, V_internalSize, T>::basic_static_string(
+    char_type const*    s
+,   size_type           n
+)
     : m_length(n)
 {
-    STLSOFT_MESSAGE_ASSERT("incident string too large for static_string construction", !(max_size() < n));
+    if (!validate_new_length_(m_length, "construction", "c-style string and length"))
+    {
+        STLSOFT_MESSAGE_ASSERT("operation would result in static_string that is too large for static limit", !(max_size() < m_length));
+    }
 
     traits_type::copy(m_buffer, s, n);
 
@@ -1307,10 +1434,17 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline basic_static_string<C, V_internalSize, T>::basic_static_string(size_type n, char_type c)
+inline
+basic_static_string<C, V_internalSize, T>::basic_static_string(
+    size_type   n
+,   char_type   c
+)
     : m_length(n)
 {
-    STLSOFT_MESSAGE_ASSERT("incident string too large for static_string construction", !(max_size() < m_length));
+    if (!validate_new_length_(m_length, "construction", "number of repeated characters"))
+    {
+        STLSOFT_MESSAGE_ASSERT("operation would result in static_string that is too large for static limit", !(max_size() < m_length));
+    }
 
     traits_type::assign(m_buffer, n, c);
 
@@ -1326,10 +1460,17 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline basic_static_string<C, V_internalSize, T>::basic_static_string(char_type const* f, char_type const* t)
+inline
+basic_static_string<C, V_internalSize, T>::basic_static_string(
+    char_type const*    f
+,   char_type const*    t
+)
     : m_length(t - f)
 {
-    STLSOFT_MESSAGE_ASSERT("incident string too large for static_string construction", !(max_size() < m_length));
+    if (!validate_new_length_(m_length, "construction", "range"))
+    {
+        STLSOFT_MESSAGE_ASSERT("operation would result in static_string that is too large for static limit", !(max_size() < m_length));
+    }
 
     traits_type::copy(m_buffer, f, m_length);
 
@@ -1345,7 +1486,8 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline basic_static_string<C, V_internalSize, T>::~basic_static_string() STLSOFT_NOEXCEPT
+inline
+basic_static_string<C, V_internalSize, T>::~basic_static_string() STLSOFT_NOEXCEPT
 {
     STLSOFT_ASSERT(is_valid());
 }
@@ -1358,7 +1500,11 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::class_type& basic_static_string<C, V_internalSize, T>::assign(ss_typename_type_k basic_static_string<C, V_internalSize, T>::char_type const* s)
+inline
+ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::class_type&
+basic_static_string<C, V_internalSize, T>::assign(
+    ss_typename_type_k basic_static_string<C, V_internalSize, T>::char_type const* s
+)
 {
     STLSOFT_ASSERT(is_valid());
 
@@ -1367,7 +1513,8 @@ inline ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::class_t
     traits_type::copy(m_buffer, s, V_internalSize);
     m_buffer[max_size()]    =   '\0';
 #else /* ? 0 */
-    class_type  t(s);
+    class_type t(s);
+
     t.swap(*this);
 #endif /* 0 */
 
@@ -1381,12 +1528,17 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::class_type& basic_static_string<C, V_internalSize, T>::assign(
+inline
+ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::class_type&
+basic_static_string<C, V_internalSize, T>::assign(
     ss_typename_type_k basic_static_string<C, V_internalSize, T>::char_type const* s
 ,   ss_typename_type_k basic_static_string<C, V_internalSize, T>::size_type        n
 )
 {
-    STLSOFT_MESSAGE_ASSERT("incident string too large for static_string assignment", !(max_size() < n));
+    if (!validate_new_length_(n, "assignment", "c-style string and length"))
+    {
+        STLSOFT_MESSAGE_ASSERT("operation would result in static_string that is too large for static limit", !(max_size() < n));
+    }
 
     STLSOFT_ASSERT(is_valid());
 
@@ -1397,7 +1549,8 @@ inline ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::class_t
     m_buffer[m_length]      =   '\0';
     m_buffer[max_size()]    =   '\0';
 #else /* ? 0 */
-    class_type  t(s, n);
+    class_type t(s, n);
+
     t.swap(*this);
 #endif /* 0 */
 
@@ -1411,13 +1564,33 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::class_type& basic_static_string<C, V_internalSize, T>::assign(
+inline
+ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::class_type&
+basic_static_string<C, V_internalSize, T>::assign(
     ss_typename_type_k basic_static_string<C, V_internalSize, T>::class_type const&    rhs
 ,   ss_typename_type_k basic_static_string<C, V_internalSize, T>::size_type            pos
 ,   ss_typename_type_k basic_static_string<C, V_internalSize, T>::size_type            n
 )
 {
-    STLSOFT_MESSAGE_ASSERT("incident string too large for static_string assignment", !(max_size() < n));
+#ifdef STLSOFT_CF_EXCEPTION_SUPPORT
+
+    if (pos > rhs.size())
+    {
+        char message[101] = "assign(): `pos` out of range of `rhs`";
+
+        throw STLSOFT_NS_QUAL_STD(out_of_range)(message);
+    }
+#else /* ? STLSOFT_CF_EXCEPTION_SUPPORT */
+
+    STLSOFT_MESSAGE_ASSERT("`pos` out of range of `rhs`", pos <= rhs.size());
+#endif /* !STLSOFT_CF_EXCEPTION_SUPPORT */
+
+    size_type const remaining = rhs.size() - pos;
+
+    if (n > remaining)
+    {
+        n = remaining;
+    }
 
     STLSOFT_ASSERT(is_valid());
 
@@ -1428,7 +1601,8 @@ inline ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::class_t
     m_buffer[m_length]      =   '\0';
     m_buffer[max_size()]    =   '\0';
 #else /* ? 0 */
-    class_type  t(rhs, pos, n);
+    class_type t(rhs, pos, n);
+
     t.swap(*this);
 #endif /* 0 */
 
@@ -1442,7 +1616,9 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::class_type& basic_static_string<C, V_internalSize, T>::assign(ss_typename_type_k basic_static_string<C, V_internalSize, T>::class_type const& rhs)
+inline
+ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::class_type&
+basic_static_string<C, V_internalSize, T>::assign(ss_typename_type_k basic_static_string<C, V_internalSize, T>::class_type const& rhs) STLSOFT_NOEXCEPT
 {
     STLSOFT_ASSERT(is_valid());
 
@@ -1460,23 +1636,26 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::class_type& basic_static_string<C, V_internalSize, T>::assign(
+inline
+ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::class_type&
+basic_static_string<C, V_internalSize, T>::assign(
     ss_typename_type_k basic_static_string<C, V_internalSize, T>::size_type    n
 ,   ss_typename_type_k basic_static_string<C, V_internalSize, T>::char_type    c
 )
 {
+#if 0
     STLSOFT_MESSAGE_ASSERT("incident string too large for static_string assignment", !(max_size() < n));
 
     STLSOFT_ASSERT(is_valid());
 
-#if 0
     traits_type::assign(m_buffer, n, c);
 
     m_length = n;
     m_buffer[m_length]      =   '\0';
     m_buffer[max_size()]    =   '\0';
 #else /* ? 0 */
-    class_type  t(n, c);
+    class_type t(n, c);
+
     t.swap(*this);
 #endif /* 0 */
 
@@ -1511,7 +1690,11 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::class_type const& basic_static_string<C, V_internalSize, T>::operator =(ss_typename_type_k basic_static_string<C, V_internalSize, T>::class_type const& rhs)
+inline
+ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::class_type const&
+basic_static_string<C, V_internalSize, T>::operator =(
+    ss_typename_type_k basic_static_string<C, V_internalSize, T>::class_type const& rhs
+) STLSOFT_NOEXCEPT
 {
     STLSOFT_ASSERT(is_valid());
 
@@ -1523,7 +1706,11 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::class_type const& basic_static_string<C, V_internalSize, T>::operator =(ss_typename_type_k basic_static_string<C, V_internalSize, T>::char_type const* s)
+inline
+ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::class_type const&
+basic_static_string<C, V_internalSize, T>::operator =(
+    ss_typename_type_k basic_static_string<C, V_internalSize, T>::char_type const* s
+)
 {
     STLSOFT_ASSERT(is_valid());
 
@@ -1535,7 +1722,11 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::class_type const& basic_static_string<C, V_internalSize, T>::operator =(ss_typename_type_k basic_static_string<C, V_internalSize, T>::char_type c)
+inline
+ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::class_type const&
+basic_static_string<C, V_internalSize, T>::operator =(
+    ss_typename_type_k basic_static_string<C, V_internalSize, T>::char_type c
+) STLSOFT_NOEXCEPT
 {
     STLSOFT_ASSERT(is_valid());
 
@@ -1554,7 +1745,9 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::size_type basic_static_string<C, V_internalSize, T>::size() const
+inline
+ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::size_type
+basic_static_string<C, V_internalSize, T>::size() const STLSOFT_NOEXCEPT
 {
     return class_type::length();
 }
@@ -1564,7 +1757,10 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline /* static */ ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::size_type basic_static_string<C, V_internalSize, T>::max_size()
+inline
+/* static */
+ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::size_type
+basic_static_string<C, V_internalSize, T>::max_size() STLSOFT_NOEXCEPT
 {
     return internalSize;
 }
@@ -1574,7 +1770,9 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::size_type basic_static_string<C, V_internalSize, T>::length() const
+inline
+ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::size_type
+basic_static_string<C, V_internalSize, T>::length() const STLSOFT_NOEXCEPT
 {
     STLSOFT_ASSERT(is_valid());
 
@@ -1586,7 +1784,9 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::size_type basic_static_string<C, V_internalSize, T>::capacity() const
+inline
+ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::size_type
+basic_static_string<C, V_internalSize, T>::capacity() const STLSOFT_NOEXCEPT
 {
     STLSOFT_ASSERT(is_valid());
 
@@ -1600,7 +1800,7 @@ template <
 >
 inline
 ss_bool_t
-basic_static_string<C, V_internalSize, T>::empty() const
+basic_static_string<C, V_internalSize, T>::empty() const STLSOFT_NOEXCEPT
 {
     STLSOFT_ASSERT(is_valid());
 
@@ -1612,12 +1812,15 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline /* static */ ss_sint_t basic_static_string<C, V_internalSize, T>::compare_(
+inline
+/* static */
+ss_sint_t
+basic_static_string<C, V_internalSize, T>::compare_(
     ss_typename_type_k basic_static_string<C, V_internalSize, T>::value_type const*    lhs
 ,   ss_typename_type_k basic_static_string<C, V_internalSize, T>::size_type            lhs_len
 ,   ss_typename_type_k basic_static_string<C, V_internalSize, T>::value_type const*    rhs
 ,   ss_typename_type_k basic_static_string<C, V_internalSize, T>::size_type            rhs_len
-)
+) STLSOFT_NOEXCEPT
 {
     size_type const cmp_len =   (lhs_len < rhs_len) ? lhs_len : rhs_len;
     ss_int_t        result  =   traits_type::compare(lhs, rhs, cmp_len);
@@ -1635,13 +1838,14 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline ss_sint_t
+inline
+ss_sint_t
 basic_static_string<C, V_internalSize, T>::compare(
     ss_typename_type_k basic_static_string<C, V_internalSize, T>::size_type         pos
 ,   ss_typename_type_k basic_static_string<C, V_internalSize, T>::size_type         cch
 ,   ss_typename_type_k basic_static_string<C, V_internalSize, T>::value_type const* s
 ,   ss_typename_type_k basic_static_string<C, V_internalSize, T>::size_type         cchRhs
-) const
+) const STLSOFT_NOEXCEPT
 {
     STLSOFT_ASSERT(is_valid());
 
@@ -1678,12 +1882,13 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline ss_sint_t
+inline
+ss_sint_t
 basic_static_string<C, V_internalSize, T>::compare(
     ss_typename_type_k basic_static_string<C, V_internalSize, T>::size_type         pos
 ,   ss_typename_type_k basic_static_string<C, V_internalSize, T>::size_type         cch
 ,   ss_typename_type_k basic_static_string<C, V_internalSize, T>::value_type const* s
-) const
+) const STLSOFT_NOEXCEPT
 {
     STLSOFT_ASSERT(is_valid());
 
@@ -1715,7 +1920,11 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline ss_sint_t basic_static_string<C, V_internalSize, T>::compare(ss_typename_type_k basic_static_string<C, V_internalSize, T>::value_type const* s) const
+inline
+ss_sint_t
+basic_static_string<C, V_internalSize, T>::compare(
+    ss_typename_type_k basic_static_string<C, V_internalSize, T>::value_type const* s
+) const STLSOFT_NOEXCEPT
 {
     STLSOFT_ASSERT(is_valid());
 
@@ -1732,14 +1941,15 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline ss_sint_t
+inline
+ss_sint_t
 basic_static_string<C, V_internalSize, T>::compare(
     ss_typename_type_k basic_static_string<C, V_internalSize, T>::size_type         pos
 ,   ss_typename_type_k basic_static_string<C, V_internalSize, T>::size_type         cch
 ,   ss_typename_type_k basic_static_string<C, V_internalSize, T>::class_type const& rhs
 ,   ss_typename_type_k basic_static_string<C, V_internalSize, T>::size_type         posRhs
 ,   ss_typename_type_k basic_static_string<C, V_internalSize, T>::size_type         cchRhs
-) const
+) const STLSOFT_NOEXCEPT
 {
     STLSOFT_ASSERT(is_valid());
 
@@ -1759,7 +1969,7 @@ basic_static_string<C, V_internalSize, T>::compare(
         lhs_len = cch;
     }
 
-    size_type rhs_len = rhs.length();
+    size_type rhs_len = rhs.size();
 
     if (!(posRhs < rhs_len))
     {
@@ -1785,12 +1995,13 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline ss_sint_t
+inline
+ss_sint_t
 basic_static_string<C, V_internalSize, T>::compare(
     ss_typename_type_k basic_static_string<C, V_internalSize, T>::size_type         pos
 ,   ss_typename_type_k basic_static_string<C, V_internalSize, T>::size_type         cch
 ,   ss_typename_type_k basic_static_string<C, V_internalSize, T>::class_type const& rhs
-) const
+) const STLSOFT_NOEXCEPT
 {
     STLSOFT_ASSERT(is_valid());
 
@@ -1810,7 +2021,7 @@ basic_static_string<C, V_internalSize, T>::compare(
         lhs_len = cch;
     }
 
-    size_type rhs_len = rhs.length();
+    size_type rhs_len = rhs.size();
 
     STLSOFT_ASSERT(is_valid());
 
@@ -1822,12 +2033,16 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline ss_sint_t basic_static_string<C, V_internalSize, T>::compare(ss_typename_type_k basic_static_string<C, V_internalSize, T>::class_type const& rhs) const
+inline
+ss_sint_t
+basic_static_string<C, V_internalSize, T>::compare(
+    ss_typename_type_k basic_static_string<C, V_internalSize, T>::class_type const& rhs
+) const STLSOFT_NOEXCEPT
 {
     STLSOFT_ASSERT(is_valid());
 
     size_type const lhs_len =   length();
-    size_type const rhs_len =   rhs.length();
+    size_type const rhs_len =   rhs.size();
 
     STLSOFT_ASSERT(is_valid());
 
@@ -1840,16 +2055,21 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline void basic_static_string<C, V_internalSize, T>::resize(
+inline
+void
+basic_static_string<C, V_internalSize, T>::resize(
     ss_typename_type_k basic_static_string<C, V_internalSize, T>::size_type    n
 ,   ss_typename_type_k basic_static_string<C, V_internalSize, T>::value_type   ch /* = value_type() */
 )
 {
-    STLSOFT_MESSAGE_ASSERT("resize request too large for static_string", !(max_size() < n));
+    if (!validate_new_length_(n, "resize", ""))
+    {
+        STLSOFT_MESSAGE_ASSERT("operation would result in static_string that is too large for static limit", !(max_size() < n));
+    }
 
     STLSOFT_ASSERT(is_valid());
 
-    size_type const len =   length();
+    size_type const len = length();
 
     if (len != n)
     {
@@ -1870,7 +2090,9 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline void basic_static_string<C, V_internalSize, T>::clear()
+inline
+void
+basic_static_string<C, V_internalSize, T>::clear() STLSOFT_NOEXCEPT
 {
     STLSOFT_ASSERT(is_valid());
 
@@ -1885,7 +2107,9 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::reference basic_static_string<C, V_internalSize, T>::operator [](ss_typename_type_k basic_static_string<C, V_internalSize, T>::size_type index)
+inline
+ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::reference
+basic_static_string<C, V_internalSize, T>::operator [](ss_typename_type_k basic_static_string<C, V_internalSize, T>::size_type index) STLSOFT_NOEXCEPT
 {
     STLSOFT_MESSAGE_ASSERT("index access out of range in static_string", index < size());
 
@@ -1899,7 +2123,9 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::const_reference basic_static_string<C, V_internalSize, T>::operator [](ss_typename_type_k basic_static_string<C, V_internalSize, T>::size_type index) const
+inline
+ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::const_reference
+basic_static_string<C, V_internalSize, T>::operator [](ss_typename_type_k basic_static_string<C, V_internalSize, T>::size_type index) const STLSOFT_NOEXCEPT
 {
     STLSOFT_MESSAGE_ASSERT("index access out of range in static_string", index < size() + 1); // Valid to return (const) reference to nul-terminator
 
@@ -1910,18 +2136,21 @@ inline ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::const_r
 
 
 #ifdef STLSOFT_CF_EXCEPTION_SUPPORT
+
 template <
     ss_typename_param_k C
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::reference basic_static_string<C, V_internalSize, T>::at(ss_typename_type_k basic_static_string<C, V_internalSize, T>::size_type index)
+inline
+ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::reference
+basic_static_string<C, V_internalSize, T>::at(ss_typename_type_k basic_static_string<C, V_internalSize, T>::size_type index)
 {
     STLSOFT_ASSERT(is_valid());
 
     if (index >= size())
     {
-        STLSOFT_THROW_X(STLSOFT_NS_QUAL_STD(out_of_range)("index out of range"));
+        STLSOFT_THROW_X(STLSOFT_NS_QUAL_STD(out_of_range)("at(): `index` out of range"));
     }
 
     STLSOFT_ASSERT(is_valid());
@@ -1934,18 +2163,84 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::const_reference basic_static_string<C, V_internalSize, T>::at(ss_typename_type_k basic_static_string<C, V_internalSize, T>::size_type index) const
+inline
+ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::const_reference
+basic_static_string<C, V_internalSize, T>::at(ss_typename_type_k basic_static_string<C, V_internalSize, T>::size_type index) const
 {
     STLSOFT_ASSERT(is_valid());
 
     if (index > size())
     {
-        STLSOFT_THROW_X(STLSOFT_NS_QUAL_STD(out_of_range)("index out of range"));
+        STLSOFT_THROW_X(STLSOFT_NS_QUAL_STD(out_of_range)("at(): `index` out of range"));
     }
 
     STLSOFT_ASSERT(is_valid());
 
     return m_buffer[index];
+}
+
+template <
+    ss_typename_param_k C
+,   ss_size_t           V_internalSize
+,   ss_typename_param_k T
+>
+inline
+ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::class_type
+basic_static_string<C, V_internalSize, T>::substr(
+    ss_typename_type_k basic_static_string<C, V_internalSize, T>::size_type  pos
+,   ss_typename_type_k basic_static_string<C, V_internalSize, T>::size_type  cch
+) const
+{
+    STLSOFT_ASSERT(is_valid());
+
+    if (pos > size())
+    {
+        STLSOFT_THROW_X(STLSOFT_NS_QUAL_STD(out_of_range)("substr(): `pos` out of range"));
+    }
+
+    STLSOFT_ASSERT(is_valid());
+
+    if (cch > (this->length() - pos))
+    {
+        cch = this->length() - pos;
+    }
+
+    return class_type(this->data() + pos, cch);
+}
+
+template <
+    ss_typename_param_k C
+,   ss_size_t           V_internalSize
+,   ss_typename_param_k T
+>
+inline
+ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::class_type
+basic_static_string<C, V_internalSize, T>::substr(
+    ss_typename_type_k basic_static_string<C, V_internalSize, T>::size_type pos
+) const
+{
+    STLSOFT_ASSERT(is_valid());
+
+    if (pos > size())
+    {
+        STLSOFT_THROW_X(STLSOFT_NS_QUAL_STD(out_of_range)("substr(): `pos` out of range"));
+    }
+
+    STLSOFT_ASSERT(is_valid());
+
+    return class_type(this->data() + pos, this->length() - pos);
+}
+
+template <
+    ss_typename_param_k C
+,   ss_size_t           V_internalSize
+,   ss_typename_param_k T
+>
+inline
+ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::class_type
+basic_static_string<C, V_internalSize, T>::substr() const
+{
+    return *this;
 }
 #endif /* !STLSOFT_CF_EXCEPTION_SUPPORT */
 
@@ -1955,7 +2250,9 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::value_type const* basic_static_string<C, V_internalSize, T>::c_str() const
+inline
+ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::value_type const*
+basic_static_string<C, V_internalSize, T>::c_str() const STLSOFT_NOEXCEPT
 {
     STLSOFT_ASSERT(is_valid());
 
@@ -1969,12 +2266,19 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::class_type& basic_static_string<C, V_internalSize, T>::append(
+inline
+ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::class_type&
+basic_static_string<C, V_internalSize, T>::append(
     ss_typename_type_k basic_static_string<C, V_internalSize, T>::char_type const* s
 ,   ss_typename_type_k basic_static_string<C, V_internalSize, T>::size_type        n
 )
 {
-    STLSOFT_MESSAGE_ASSERT("resize request too large for static_string", !(max_size() < n + length()));
+    size_type const new_length = m_length + n;
+
+    if (!validate_new_length_(new_length, "appending", "c-style string and length"))
+    {
+        STLSOFT_MESSAGE_ASSERT("operation would result in static_string that is too large for static limit", !(max_size() < new_length));
+    }
 
     STLSOFT_ASSERT(is_valid());
 
@@ -1996,7 +2300,11 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::class_type& basic_static_string<C, V_internalSize, T>::append(ss_typename_type_k basic_static_string<C, V_internalSize, T>::char_type const* s)
+inline
+ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::class_type&
+basic_static_string<C, V_internalSize, T>::append(
+    ss_typename_type_k basic_static_string<C, V_internalSize, T>::char_type const* s
+)
 {
     STLSOFT_ASSERT(is_valid());
 
@@ -2008,7 +2316,9 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::class_type& basic_static_string<C, V_internalSize, T>::append(
+inline
+ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::class_type&
+basic_static_string<C, V_internalSize, T>::append(
     ss_typename_type_k basic_static_string<C, V_internalSize, T>::class_type const&    rhs
 ,   ss_typename_type_k basic_static_string<C, V_internalSize, T>::size_type            pos
 ,   ss_typename_type_k basic_static_string<C, V_internalSize, T>::size_type            cch
@@ -2017,7 +2327,7 @@ inline ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::class_t
     STLSOFT_ASSERT(is_valid());
 
     char_type const* s  =   rhs.m_buffer;
-    size_type       len =   rhs.length();
+    size_type       len =   rhs.size();
 
     if (len < pos)
     {
@@ -2048,11 +2358,15 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::class_type& basic_static_string<C, V_internalSize, T>::append(ss_typename_type_k basic_static_string<C, V_internalSize, T>::class_type const& s)
+inline
+ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::class_type&
+basic_static_string<C, V_internalSize, T>::append(
+    ss_typename_type_k basic_static_string<C, V_internalSize, T>::class_type const& s
+)
 {
     STLSOFT_ASSERT(is_valid());
 
-    return append(s.m_buffer, s.length());
+    return append(s.m_buffer, s.size());
 }
 
 template <
@@ -2060,12 +2374,19 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::class_type& basic_static_string<C, V_internalSize, T>::append(
+inline
+ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::class_type&
+basic_static_string<C, V_internalSize, T>::append(
     ss_typename_type_k basic_static_string<C, V_internalSize, T>::size_type    n
 ,   ss_typename_type_k basic_static_string<C, V_internalSize, T>::char_type    ch
 )
 {
-    STLSOFT_MESSAGE_ASSERT("resize request too large for static_string", !(max_size() < n + length()));
+    size_type const new_length = m_length + n;
+
+    if (!validate_new_length_(new_length, "appending", "number of repeated characters"))
+    {
+        STLSOFT_MESSAGE_ASSERT("operation would result in static_string that is too large for static limit", !(max_size() < new_length));
+    }
 
     STLSOFT_ASSERT(is_valid());
 
@@ -2088,7 +2409,9 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::class_type& basic_static_string<C, V_internalSize, T>::append(
+inline
+ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::class_type&
+basic_static_string<C, V_internalSize, T>::append(
     ss_typename_type_k basic_static_string<C, V_internalSize, T>::const_iterator   first
 ,   ss_typename_type_k basic_static_string<C, V_internalSize, T>::const_iterator   last
 )
@@ -2106,7 +2429,11 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::class_type& basic_static_string<C, V_internalSize, T>::operator +=(ss_typename_type_k basic_static_string<C, V_internalSize, T>::char_type ch)
+inline
+ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::class_type&
+basic_static_string<C, V_internalSize, T>::operator +=(
+    ss_typename_type_k basic_static_string<C, V_internalSize, T>::char_type ch
+)
 {
     STLSOFT_ASSERT(is_valid());
 
@@ -2118,7 +2445,11 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::class_type& basic_static_string<C, V_internalSize, T>::operator +=(ss_typename_type_k basic_static_string<C, V_internalSize, T>::char_type const* s)
+inline
+ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::class_type&
+basic_static_string<C, V_internalSize, T>::operator +=(
+    ss_typename_type_k basic_static_string<C, V_internalSize, T>::char_type const* s
+)
 {
     STLSOFT_ASSERT(is_valid());
 
@@ -2130,7 +2461,11 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::class_type& basic_static_string<C, V_internalSize, T>::operator +=(ss_typename_type_k basic_static_string<C, V_internalSize, T>::class_type const& rhs)
+inline
+ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::class_type&
+basic_static_string<C, V_internalSize, T>::operator +=(
+    ss_typename_type_k basic_static_string<C, V_internalSize, T>::class_type const& rhs
+)
 {
     STLSOFT_ASSERT(is_valid());
 
@@ -2142,7 +2477,11 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline void basic_static_string<C, V_internalSize, T>::push_back(ss_typename_type_k basic_static_string<C, V_internalSize, T>::char_type ch)
+inline
+void
+basic_static_string<C, V_internalSize, T>::push_back(
+    ss_typename_type_k basic_static_string<C, V_internalSize, T>::char_type ch
+)
 {
     STLSOFT_ASSERT(is_valid());
 
@@ -2154,14 +2493,16 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline void basic_static_string<C, V_internalSize, T>::pop_back()
+inline
+void
+basic_static_string<C, V_internalSize, T>::pop_back() STLSOFT_NOEXCEPT
 {
     STLSOFT_ASSERT(is_valid());
 
-    if (m_length != 0) {
+    if (m_length != 0)
+    {
         m_buffer[--m_length] = 0;
     }
-
 }
 
 template <
@@ -2169,11 +2510,18 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline void basic_static_string<C, V_internalSize, T>::reserve(ss_typename_type_k basic_static_string<C, V_internalSize, T>::size_type n)
+inline
+void
+basic_static_string<C, V_internalSize, T>::reserve(
+    ss_typename_type_k basic_static_string<C, V_internalSize, T>::size_type n
+)
 {
     STLSOFT_ASSERT(is_valid());
 
-    STLSOFT_MESSAGE_ASSERT("reserve request out of range in static_string", !(max_size() < n));
+    if (!validate_new_length_(n, "reserve", ""))
+    {
+        STLSOFT_MESSAGE_ASSERT("operation would result in static_string that is too large for static limit", !(max_size() < n));
+    }
 
     STLSOFT_SUPPRESS_UNUSED(n);
 }
@@ -2183,7 +2531,11 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline void basic_static_string<C, V_internalSize, T>::swap(ss_typename_type_k basic_static_string<C, V_internalSize, T>::class_type& other)
+inline
+void
+basic_static_string<C, V_internalSize, T>::swap(
+    ss_typename_type_k basic_static_string<C, V_internalSize, T>::class_type& other
+) STLSOFT_NOEXCEPT
 {
     STLSOFT_ASSERT(is_valid());
 
@@ -2203,7 +2555,9 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::value_type const* basic_static_string<C, V_internalSize, T>::data() const
+inline
+ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::value_type const*
+basic_static_string<C, V_internalSize, T>::data() const STLSOFT_NOEXCEPT
 {
     STLSOFT_ASSERT(is_valid());
 
@@ -2215,13 +2569,13 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline ss_typename_type_ret_k
-basic_static_string<C, V_internalSize, T>::size_type
+inline
+ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::size_type
 basic_static_string<C, V_internalSize, T>::copy(
     ss_typename_type_k basic_static_string<C, V_internalSize, T>::value_type*   dest
 ,   ss_typename_type_k basic_static_string<C, V_internalSize, T>::size_type     cch
 ,   ss_typename_type_k basic_static_string<C, V_internalSize, T>::size_type     pos /* = 0 */
-) const
+) const STLSOFT_NOEXCEPT
 {
     STLSOFT_ASSERT(is_valid());
 
@@ -2251,7 +2605,9 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::const_iterator basic_static_string<C, V_internalSize, T>::begin() const
+inline
+ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::const_iterator
+basic_static_string<C, V_internalSize, T>::begin() const STLSOFT_NOEXCEPT
 {
     STLSOFT_ASSERT(is_valid());
 
@@ -2263,7 +2619,9 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::const_iterator basic_static_string<C, V_internalSize, T>::end() const
+inline
+ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::const_iterator
+basic_static_string<C, V_internalSize, T>::end() const STLSOFT_NOEXCEPT
 {
     STLSOFT_ASSERT(is_valid());
 
@@ -2275,7 +2633,9 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::iterator basic_static_string<C, V_internalSize, T>::begin()
+inline
+ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::iterator
+basic_static_string<C, V_internalSize, T>::begin() STLSOFT_NOEXCEPT
 {
     STLSOFT_ASSERT(is_valid());
 
@@ -2287,7 +2647,9 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::iterator basic_static_string<C, V_internalSize, T>::end()
+inline
+ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::iterator
+basic_static_string<C, V_internalSize, T>::end() STLSOFT_NOEXCEPT
 {
     STLSOFT_ASSERT(is_valid());
 
@@ -2301,7 +2663,9 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::const_reverse_iterator basic_static_string<C, V_internalSize, T>::rbegin() const
+inline
+ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::const_reverse_iterator
+basic_static_string<C, V_internalSize, T>::rbegin() const STLSOFT_NOEXCEPT
 {
     STLSOFT_ASSERT(is_valid());
 
@@ -2313,7 +2677,9 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::const_reverse_iterator basic_static_string<C, V_internalSize, T>::rend() const
+inline
+ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::const_reverse_iterator
+basic_static_string<C, V_internalSize, T>::rend() const STLSOFT_NOEXCEPT
 {
     STLSOFT_ASSERT(is_valid());
 
@@ -2325,7 +2691,9 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::reverse_iterator basic_static_string<C, V_internalSize, T>::rbegin()
+inline
+ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::reverse_iterator
+basic_static_string<C, V_internalSize, T>::rbegin() STLSOFT_NOEXCEPT
 {
     STLSOFT_ASSERT(is_valid());
 
@@ -2337,14 +2705,15 @@ template <
 ,   ss_size_t           V_internalSize
 ,   ss_typename_param_k T
 >
-inline ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::reverse_iterator basic_static_string<C, V_internalSize, T>::rend()
+inline
+ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::reverse_iterator
+basic_static_string<C, V_internalSize, T>::rend() STLSOFT_NOEXCEPT
 {
     STLSOFT_ASSERT(is_valid());
 
     return reverse_iterator(begin());
 }
-#endif /* STLSOFT_LF_BIDIRECTIONAL_ITERATOR_SUPPORT */
-
+# endif /* STLSOFT_LF_BIDIRECTIONAL_ITERATOR_SUPPORT */
 #endif /* !STLSOFT_DOCUMENTATION_SKIP_SECTION */
 
 
@@ -2370,7 +2739,12 @@ namespace std
     ,   STLSOFT_NS_QUAL(ss_size_t)  V_internalSize
     ,   ss_typename_param_k         T
     >
-    inline void swap(STLSOFT_NS_QUAL(basic_static_string)<C, V_internalSize, T>& lhs, STLSOFT_NS_QUAL(basic_static_string)<C, V_internalSize, T>& rhs)
+    inline
+    void
+    swap(
+        STLSOFT_NS_QUAL(basic_static_string)<C, V_internalSize, T>& lhs
+    ,   STLSOFT_NS_QUAL(basic_static_string)<C, V_internalSize, T>& rhs
+    )
     {
         lhs.swap(rhs);
     }
