@@ -1,12 +1,12 @@
 /* /////////////////////////////////////////////////////////////////////////
- * File:        stlsoft/filesystem/read_line.hpp
+ * File:    stlsoft/filesystem/read_line.hpp
  *
- * Purpose:     Definition of stlsoft::read_line() function template.
+ * Purpose: Definition of stlsoft::read_line() function template.
  *
- * Created:     2nd January 2007
- * Updated:     22nd January 2024
+ * Created: 2nd January 2007
+ * Updated: 20th February 2024
  *
- * Home:        http://stlsoft.org/
+ * Home:    http://stlsoft.org/
  *
  * Copyright (c) 2019-2024, Matthew Wilson and Synesis Information Systems
  * Copyright (c) 2007-2019, Matthew Wilson and Synesis Software
@@ -55,8 +55,9 @@
 # define STLSOFT_VER_STLSOFT_FILESYSTEM_HPP_READ_LINE_MAJOR     2
 # define STLSOFT_VER_STLSOFT_FILESYSTEM_HPP_READ_LINE_MINOR     1
 # define STLSOFT_VER_STLSOFT_FILESYSTEM_HPP_READ_LINE_REVISION  5
-# define STLSOFT_VER_STLSOFT_FILESYSTEM_HPP_READ_LINE_EDIT      25
+# define STLSOFT_VER_STLSOFT_FILESYSTEM_HPP_READ_LINE_EDIT      26
 #endif /* !STLSOFT_DOCUMENTATION_SKIP_SECTION */
+
 
 /* /////////////////////////////////////////////////////////////////////////
  * includes
@@ -79,6 +80,7 @@
 # include <stdio.h>
 #endif /* !STLSOFT_INCL_H_STDIO */
 
+
 /* /////////////////////////////////////////////////////////////////////////
  * namespace
  */
@@ -87,6 +89,7 @@
 namespace stlsoft
 {
 #endif /* STLSOFT_NO_NAMESPACE */
+
 
 /* /////////////////////////////////////////////////////////////////////////
  * typedefs
@@ -118,10 +121,16 @@ struct read_line_flags
     };
 };
 
-inline read_line_flags::flags_t operator |(read_line_flags::flags_t const& lhs, read_line_flags::flags_t const& rhs)
+inline
+read_line_flags::flags_t
+operator |(
+    read_line_flags::flags_t const& lhs
+,   read_line_flags::flags_t const& rhs
+)
 {
     return static_cast<read_line_flags::flags_t>(int(lhs) | int(rhs));
 }
+
 
 /* /////////////////////////////////////////////////////////////////////////
  * implementation
@@ -168,13 +177,17 @@ namespace readers
         FILE* const m_stm;
     };
 
-    template <ss_typename_param_k I>
+    template <
+        ss_typename_param_k I
+    >
     class read_from_iterator_range
     {
     private: // Member Types
         typedef I                                           iterator_type_;
     public:
-        typedef read_from_iterator_range<iterator_type_>    class_type;
+        typedef read_from_iterator_range<
+            iterator_type_
+        >                                                   class_type;
 
     public:
         ss_explicit_k read_from_iterator_range(iterator_type_ from, iterator_type_ to)
@@ -235,7 +248,12 @@ namespace readers
             , m_current(rhs.m_current)
         {}
     private:
-        static ss_size_t calc_length_(char const* buffer, int size)
+        static
+        ss_size_t
+        calc_length_(
+            char const* buffer
+        ,   int         size
+        )
         {
             if (size < 0)
             {
@@ -283,7 +301,7 @@ namespace readers
 
     private:
         char const* const   m_buffer;
-        const ss_size_t     m_size;
+        ss_size_t const     m_size;
         ss_size_t           m_current;
     };
 
@@ -291,10 +309,17 @@ namespace readers
 
 namespace read_line_impl
 {
-    template<   ss_typename_param_k S
-            ,   ss_typename_param_k P
-            >
-    static ss_bool_t read_line(P& policy, S& line, read_line_flags::flags_t flags)
+    template <
+        ss_typename_param_k S
+    ,   ss_typename_param_k P
+    >
+    static
+    ss_bool_t
+    read_line(
+            P&                          policy
+        ,   S&                          line
+        ,   read_line_flags::flags_t    flags
+        )
     {
         ss_size_t numCr = 0;
 
@@ -309,74 +334,80 @@ namespace read_line_impl
         {
             switch (ch)
             {
-                case    '\r':
-                    // Options:
-                    //
-                    // - recognising CR     -   handle
-                    // - recognising CRLF   -   handle
+            case    '\r':
 
-                    // If we're recognising either
+                // Options:
+                //
+                // - recognising CR     -   handle
+                // - recognising CRLF   -   handle
 
-                    if (0 != ((read_line_flags::recogniseCrAsEOL | read_line_flags::recogniseCrLfAsEOL) & flags))
+                // If we're recognising either
+
+                if (0 != ((read_line_flags::recogniseCrAsEOL | read_line_flags::recogniseCrLfAsEOL) & flags))
+                {
+                    if (read_line_flags::recogniseCrLfAsEOL & flags)
                     {
-                        if (read_line_flags::recogniseCrLfAsEOL & flags)
+                        // We need to look ahead in order to work out whether
+                        // this might be the start of a \r\n pair
+                        int ch2 = policy.peek_next_char();
+
+                        if ('\n' == ch2)
                         {
-                            // We need to look ahead in order to work out whether
-                            // this might be the start of a \r\n pair
-                            int ch2 = policy.peek_next_char();
+                            policy.read_char();
 
-                            if ('\n' == ch2)
-                            {
-                                policy.read_char();
+                            line.append(numCr, '\r');
 
-                                line.append(numCr, '\r');
-
-                                return true;
-                            }
-                        }
-
-                        if (read_line_flags::recogniseCrAsEOL & flags)
-                        {
                             return true;
                         }
                     }
 
-                    ++numCr;
-                    continue;
-                case    '\n':
-                    // Options:
-                    //
-                    // - recognising CR     -   ignore
-                    // - recognising LF     -   handle
-                    // - recognising CRLF   -   handle
-                    //
-                    //  We check CRLF first
-
-                    if (numCr > 0 &&
-                        (read_line_flags::recogniseCrLfAsEOL & flags))
+                    if (read_line_flags::recogniseCrAsEOL & flags)
                     {
-                        // Here we will digest any excess CRs as literal
-                        // characters in the line, and then return the
-                        // line
-
-                        line.append(numCr - 1, '\r');
-
                         return true;
                     }
-                    else if (read_line_flags::recogniseLfAsEOL & flags)
-                    {
-                        line.append(numCr, '\r');
+                }
 
-                        return true;
-                    }
-                    break;
-                default:
-                    if (numCr > 0)
-                    {
-                        line.append(numCr, '\r');
-                        numCr = 0;
-                    }
-                    break;
+                ++numCr;
+
+                continue;
+            case    '\n':
+
+                // Options:
+                //
+                // - recognising CR     -   ignore
+                // - recognising LF     -   handle
+                // - recognising CRLF   -   handle
+                //
+                //  We check CRLF first
+
+                if (numCr > 0 &&
+                    (read_line_flags::recogniseCrLfAsEOL & flags))
+                {
+                    // Here we will digest any excess CRs as literal
+                    // characters in the line, and then return the
+                    // line
+
+                    line.append(numCr - 1, '\r');
+
+                    return true;
+                }
+                else if (read_line_flags::recogniseLfAsEOL & flags)
+                {
+                    line.append(numCr, '\r');
+
+                    return true;
+                }
+
+                break;
+            default:
+
+                if (numCr > 0)
+                {
+                    line.append(numCr, '\r');
+                    numCr = 0;
+                }
+
+                break;
             }
 
             line.append(1, static_cast<char>(ch));
@@ -386,8 +417,8 @@ namespace read_line_impl
     }
 
 } /* namespace read_line_impl */
-
 #endif /* !STLSOFT_DOCUMENTATION_SKIP_SECTION */
+
 
 /* /////////////////////////////////////////////////////////////////////////
  * functions
@@ -412,8 +443,11 @@ namespace read_line_impl
  *   line-feed (<code>'\\n'</code>), or carriage-return+line-feed
  *   (<code>"\\r\\n"</code>).
  */
-template <ss_typename_param_k S>
-ss_bool_t read_line(
+template <
+    ss_typename_param_k S
+>
+ss_bool_t
+read_line(
     FILE*                       stm
 ,   S&                          line
 ,   read_line_flags::flags_t    flags = read_line_flags::recogniseAll
@@ -426,10 +460,12 @@ ss_bool_t read_line(
 
 /** Reads a line from a pair of iterators
  */
-template<   ss_typename_param_k I
-        ,   ss_typename_param_k S
-        >
-ss_bool_t read_line(
+template <
+    ss_typename_param_k I
+,   ss_typename_param_k S
+>
+ss_bool_t
+read_line(
     I                           from
 ,   I                           to
 ,   S&                          line
@@ -441,11 +477,13 @@ ss_bool_t read_line(
     return read_line_impl::read_line(policy, line, flags);
 }
 
+
 /* ////////////////////////////////////////////////////////////////////// */
 
 #ifndef STLSOFT_NO_NAMESPACE
 } /* namespace stlsoft */
 #endif /* STLSOFT_NO_NAMESPACE */
+
 
 /* /////////////////////////////////////////////////////////////////////////
  * inclusion control
@@ -456,6 +494,7 @@ ss_bool_t read_line(
 #endif /* STLSOFT_CF_PRAGMA_ONCE_SUPPORT */
 
 #endif /* !STLSOFT_INCL_STLSOFT_FILESYSTEM_HPP_READ_LINE */
+
 
 /* ///////////////////////////// end of file //////////////////////////// */
 
