@@ -142,26 +142,26 @@ namespace readers
 {
     class read_from_FILE
     {
-    public: // Member Types
-        typedef read_from_FILE  class_type;
+    public: // types
+        typedef read_from_FILE                              class_type;
 
     public:
-        ss_explicit_k read_from_FILE(FILE* stm)
+        ss_explicit_k read_from_FILE(FILE* stm) STLSOFT_NOEXCEPT
             : m_stm(stm)
         {}
-        read_from_FILE(class_type const& rhs)
+        read_from_FILE(class_type const& rhs) STLSOFT_NOEXCEPT
             : m_stm(rhs.m_stm)
         {}
     private:
         class_type& operator =(class_type const&);
 
-    public: // Operations
-        int read_char()
+    public: // operations
+        int read_char() STLSOFT_NOEXCEPT
         {
             return ::fgetc(m_stm);
         }
 
-        int peek_next_char()
+        int peek_next_char() STLSOFT_NOEXCEPT
         {
             int ch = ::fgetc(m_stm);
 
@@ -173,7 +173,7 @@ namespace readers
             return ch;
         }
 
-    private:
+    private: // fields
         FILE* const m_stm;
     };
 
@@ -182,14 +182,14 @@ namespace readers
     >
     class read_from_iterator_range
     {
-    private: // Member Types
+    private: // types
         typedef I                                           iterator_type_;
     public:
         typedef read_from_iterator_range<
             iterator_type_
         >                                                   class_type;
 
-    public:
+    public: // construction
         ss_explicit_k read_from_iterator_range(iterator_type_ from, iterator_type_ to)
             : m_from(from)
             , m_to(to)
@@ -201,7 +201,7 @@ namespace readers
     private:
         class_type& operator =(class_type const&);
 
-    public: // Operations
+    public: // operations
         int read_char()
         {
             if (m_from == m_to)
@@ -226,23 +226,23 @@ namespace readers
             }
         }
 
-    private:
+    private: // fields
         iterator_type_          m_from;
         iterator_type_ const    m_to;
     };
 
     class read_from_char_buffer
     {
-    public: // Member Types
+    public: // types
         typedef read_from_char_buffer   class_type;
 
-    public:
-        ss_explicit_k read_from_char_buffer(char const* buffer, int size)
+    public: // construction
+        ss_explicit_k read_from_char_buffer(char const* buffer, int size) STLSOFT_NOEXCEPT
             : m_buffer(buffer)
             , m_size(calc_length_(buffer, size))
             , m_current(0)
         {}
-        read_from_char_buffer(class_type const& rhs)
+        read_from_char_buffer(class_type const& rhs) STLSOFT_NOEXCEPT
             : m_buffer(rhs.m_buffer)
             , m_size(rhs.m_size)
             , m_current(rhs.m_current)
@@ -253,7 +253,7 @@ namespace readers
         calc_length_(
             char const* buffer
         ,   int         size
-        )
+        ) STLSOFT_NOEXCEPT
         {
             if (size < 0)
             {
@@ -274,8 +274,8 @@ namespace readers
         }
         class_type& operator =(class_type const&);
 
-    public: // Operations
-        int read_char()
+    public: // operations
+        int read_char() STLSOFT_NOEXCEPT
         {
             if (m_current == m_size)
             {
@@ -287,7 +287,7 @@ namespace readers
             }
         }
 
-        int peek_next_char()
+        int peek_next_char() STLSOFT_NOEXCEPT
         {
             if (m_current == m_size)
             {
@@ -299,7 +299,7 @@ namespace readers
             }
         }
 
-    private:
+    private: // fields
         char const* const   m_buffer;
         ss_size_t const     m_size;
         ss_size_t           m_current;
@@ -424,13 +424,14 @@ namespace read_line_impl
  * functions
  */
 
-/** Reads a line from a C stream
+/** Reads a line from a C stream (<code>FILE*</code>)
  *
- * \param stm The stream to read from
- * \param line The line to read into. Must be an instance of a type that
- *   is structurally conformant to std::string in the following ways: it
- *   has a default constructor, it has a swap() method, and it has a block
- *   append method (taking repeat count and character to add)
+ * \param stm The stream from which to read
+ * \param line The object into which the next line is read. Must be an
+ *   instance of a type that is structurally conformant to `std::string` in
+ *   the following ways: it has a default constructor; it has a `swap()`
+ *   method; and it has a block `append()` method (taking repeat count and
+ *   character to add)
  * \param flags The flags that control what line-termination sequences are
  *   recognised
  *
@@ -459,6 +460,18 @@ read_line(
 }
 
 /** Reads a line from a pair of iterators
+ *
+ * \param from The start of the range ([from, to)) from which to read
+ * \param to The end of the range ([from, to)) from which to read
+ * \param line The object into which the next line is read. Must be an
+ *   instance of a type that is structurally conformant to `std::string` in
+ *   the following ways: it has a default constructor; it has a `swap()`
+ *   method; and it has a block `append()` method (taking repeat count and
+ *   character to add)
+ * \param flags The flags that control what line-termination sequences are
+ *   recognised
+ *
+ * \see read_line(FILE*, S&, read_line_flags::flags_t)
  */
 template <
     ss_typename_param_k I
