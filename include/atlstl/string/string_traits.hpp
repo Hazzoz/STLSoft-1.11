@@ -1,14 +1,14 @@
 /* /////////////////////////////////////////////////////////////////////////
- * File:        atlstl/string/string_traits.hpp
+ * File:    atlstl/string/string_traits.hpp
  *
- * Purpose:     Contains string_traits for ATL.
+ * Purpose: Contains string_traits for ATL.
  *
- * Created:     28th April 2005
- * Updated:     26th December 2020
+ * Created: 28th April 2005
+ * Updated: 20th February 2024
  *
- * Home:        http://stlsoft.org/
+ * Home:    http://stlsoft.org/
  *
- * Copyright (c) 2019-2020, Matthew Wilson and Synesis Information Systems
+ * Copyright (c) 2019-2024, Matthew Wilson and Synesis Information Systems
  * Copyright (c) 2005-2019, Matthew Wilson and Synesis Software
  * All rights reserved.
  *
@@ -55,8 +55,9 @@
 # define ATLSTL_VER_ATLSTL_STRING_HPP_STRING_TRAITS_MAJOR      3
 # define ATLSTL_VER_ATLSTL_STRING_HPP_STRING_TRAITS_MINOR      0
 # define ATLSTL_VER_ATLSTL_STRING_HPP_STRING_TRAITS_REVISION   6
-# define ATLSTL_VER_ATLSTL_STRING_HPP_STRING_TRAITS_EDIT       31
+# define ATLSTL_VER_ATLSTL_STRING_HPP_STRING_TRAITS_EDIT       32
 #endif /* !STLSOFT_DOCUMENTATION_SKIP_SECTION */
+
 
 /* /////////////////////////////////////////////////////////////////////////
  * includes
@@ -73,6 +74,7 @@
 # include <stlsoft/string/string_traits_fwd.hpp>
 #endif /* !STLSOFT_INCL_STLSOFT_STRING_HPP_STRING_TRAITS_FWD */
 
+
 /* /////////////////////////////////////////////////////////////////////////
  * namespace
  */
@@ -81,6 +83,7 @@
 namespace stlsoft
 {
 #endif /* STLSOFT_NO_NAMESPACE */
+
 
 /* /////////////////////////////////////////////////////////////////////////
  * classes
@@ -117,27 +120,29 @@ struct string_traits<CComBSTR>
     {
         return string_type(static_cast<int>(len), static_cast<const_pointer>(src) + pos);
     }
-    static string_type &assign_inplace(string_type &str, const_iterator first, const_iterator last)
+    static string_type& assign_inplace(string_type& str, const_iterator first, const_iterator last)
     {
         return (str = string_type(static_cast<int>(last - first), first), str);
     }
 
-    static iterator begin(string_type &str)
+    static iterator begin(string_type& str)
     {
         return &(str[0]);
     }
-    static iterator end(string_type &str)
+    static iterator end(string_type& str)
     {
         return begin(str) + str.Length();
     }
 };
 #endif /* !STLSOFT_DOCUMENTATION_SKIP_SECTION */
 
+
 /* ////////////////////////////////////////////////////////////////////// */
 
 #ifndef STLSOFT_NO_NAMESPACE
 } /* namespace stlsoft */
 #endif /* STLSOFT_NO_NAMESPACE */
+
 
 /* /////////////////////////////////////////////////////////////////////////
  * inclusion control
@@ -148,6 +153,7 @@ struct string_traits<CComBSTR>
 #endif /* STLSOFT_CF_PRAGMA_ONCE_SUPPORT */
 
 #endif /* !ATLSTL_INCL_ATLSTL_STRING_HPP_STRING_TRAITS */
+
 
 /* ///////////////////////////// end of file //////////////////////////// */
 

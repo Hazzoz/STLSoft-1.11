@@ -1,14 +1,14 @@
 /* /////////////////////////////////////////////////////////////////////////
- * File:        stlsoft/stlsoft.h
+ * File:    stlsoft/stlsoft.h
  *
- * Purpose:     Root header for the STLSoft libraries. Performs various
- *              compiler and platform discriminations, and definitions of
- *              types.
+ * Purpose: Root header for the STLSoft libraries. Performs various
+ *          compiler and platform discriminations, and definitions of
+ *          types.
  *
- * Created:     15th January 2002
- * Updated:     16th February 2024
+ * Created: 15th January 2002
+ * Updated: 20th February 2024
  *
- * Home:        http://stlsoft.org/
+ * Home:    http://stlsoft.org/
  *
  * Copyright (c) 2019-2024, Matthew Wilson and Synesis Information Systems
  * Copyright (c) 2002-2019, Matthew Wilson and Synesis Software
@@ -56,8 +56,8 @@
 #ifndef STLSOFT_DOCUMENTATION_SKIP_SECTION
 # define STLSOFT_VER_STLSOFT_H_STLSOFT_MAJOR    3
 # define STLSOFT_VER_STLSOFT_H_STLSOFT_MINOR    52
-# define STLSOFT_VER_STLSOFT_H_STLSOFT_REVISION 2
-# define STLSOFT_VER_STLSOFT_H_STLSOFT_EDIT     546
+# define STLSOFT_VER_STLSOFT_H_STLSOFT_REVISION 3
+# define STLSOFT_VER_STLSOFT_H_STLSOFT_EDIT     547
 #else /* ? STLSOFT_DOCUMENTATION_SKIP_SECTION */
 /* # include "./internal/doxygen_defs.h" */
 #endif /* !STLSOFT_DOCUMENTATION_SKIP_SECTION */
@@ -348,12 +348,14 @@
 # define _STLSOFT_VER_1_10_9        0x010a09ff  /*!< Version 1.10.9 (12th February 2024) */
 # define _STLSOFT_VER_1_10_10       0x010a0aff  /*!< Version 1.10.10 (16th February 2024) */
 # define _STLSOFT_VER_1_10_11       0x010a0bff  /*!< Version 1.10.11 (16th February 2024) */
+
+# define _STLSOFT_VER_1_11_1_A01    0x010b0141  /*!< Version 1.11.1 alpha 1 (20th February 2024) */
 #endif /* !STLSOFT_DOCUMENTATION_SKIP_SECTION */
 
 #define _STLSOFT_VER_MAJOR          1
-#define _STLSOFT_VER_MINOR          10
-#define _STLSOFT_VER_REVISION       11
-#define _STLSOFT_VER                _STLSOFT_VER_1_10_11
+#define _STLSOFT_VER_MINOR          11
+#define _STLSOFT_VER_REVISION       1
+#define _STLSOFT_VER                _STLSOFT_VER_1_11_1_A01
 
 /* /////////////////////////////////////
  * underlying version detection

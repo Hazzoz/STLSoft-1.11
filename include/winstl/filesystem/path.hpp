@@ -1,15 +1,15 @@
 /* /////////////////////////////////////////////////////////////////////////
- * File:        winstl/filesystem/path.hpp
+ * File:    winstl/filesystem/path.hpp
  *
- * Purpose:     Simple class that represents a path.
+ * Purpose: Simple class that represents a path.
  *
- * Created:     1st May 1993
- * Updated:     16th February 2024
+ * Created: 1st May 1993
+ * Updated: 20th February 2024
  *
- * Thanks to:   Pablo Aguilar for reporting defect in push_ext() (which
- *              doesn't work for wide-string builds).
+ * Thanks:  Pablo Aguilar for reporting defect in push_ext() (which
+ *          doesn't work for wide-string builds).
  *
- * Home:        http://stlsoft.org/
+ * Home:    http://stlsoft.org/
  *
  * Copyright (c) 2019-2024, Matthew Wilson and Synesis Information Systems
  * Copyright (c) 1993-2019, Matthew Wilson and Synesis Software
@@ -56,9 +56,10 @@
 #ifndef STLSOFT_DOCUMENTATION_SKIP_SECTION
 # define WINSTL_VER_WINSTL_FILESYSTEM_HPP_PATH_MAJOR    7
 # define WINSTL_VER_WINSTL_FILESYSTEM_HPP_PATH_MINOR    1
-# define WINSTL_VER_WINSTL_FILESYSTEM_HPP_PATH_REVISION 7
-# define WINSTL_VER_WINSTL_FILESYSTEM_HPP_PATH_EDIT     321
+# define WINSTL_VER_WINSTL_FILESYSTEM_HPP_PATH_REVISION 8
+# define WINSTL_VER_WINSTL_FILESYSTEM_HPP_PATH_EDIT     322
 #endif /* !STLSOFT_DOCUMENTATION_SKIP_SECTION */
+
 
 /* /////////////////////////////////////////////////////////////////////////
  * includes
@@ -2096,7 +2097,7 @@ basic_path<C, T, A>::canonicalise(
 
     // 0. Handle special path prefixes
 
-    part_buffer_type_   parts(this->length() / 2);  // Uncanonicalised directory parts
+    part_buffer_type_   parts(this->size() / 2);  // Uncanonicalised directory parts
     char_type*          dest    =   &newPath.m_buffer[0] + results.root.len;
     char_type const*    p1      =   data_() + results.root.len;
     char_type const*    p2;
