@@ -55,9 +55,9 @@
 
 #ifndef STLSOFT_DOCUMENTATION_SKIP_SECTION
 # define STLSOFT_VER_STLSOFT_STRING_HPP_STATIC_STRING_MAJOR    5
-# define STLSOFT_VER_STLSOFT_STRING_HPP_STATIC_STRING_MINOR    2
+# define STLSOFT_VER_STLSOFT_STRING_HPP_STATIC_STRING_MINOR    3
 # define STLSOFT_VER_STLSOFT_STRING_HPP_STATIC_STRING_REVISION 1
-# define STLSOFT_VER_STLSOFT_STRING_HPP_STATIC_STRING_EDIT     224
+# define STLSOFT_VER_STLSOFT_STRING_HPP_STATIC_STRING_EDIT     225
 #endif /* !STLSOFT_DOCUMENTATION_SKIP_SECTION */
 
 
@@ -445,6 +445,20 @@ public:
     ss_sint_t compare(size_type pos, size_type n, class_type const& rhs) const STLSOFT_NOEXCEPT;
     /// Compares \c this with the given string
     ss_sint_t compare(class_type const& rhs) const STLSOFT_NOEXCEPT;
+
+    /// Indicates whether the string starts with the string \c s
+    bool starts_with(class_type const& s) const STLSOFT_NOEXCEPT;
+    /// Indicates whether the string starts with the C-style string \c s
+    bool starts_with(char_type const* s) const STLSOFT_NOEXCEPT;
+    /// Indicates whether the string starts with the character \c ch
+    bool starts_with(char_type ch) const STLSOFT_NOEXCEPT;
+
+    /// Indicates whether the string ends with the string \c s
+    bool ends_with(class_type const& s) const STLSOFT_NOEXCEPT;
+    /// Indicates whether the string ends with the C-style string \c s
+    bool ends_with(char_type const* s) const STLSOFT_NOEXCEPT;
+    /// Indicates whether the string ends with the character \c ch
+    bool ends_with(char_type ch) const STLSOFT_NOEXCEPT;
 /// @}
 
 /// \name Accessors
@@ -475,6 +489,23 @@ public:
     value_type const*       c_str() const STLSOFT_NOEXCEPT;
     /// Returns non-mutable (const) pointer to string data
     value_type const*       data() const STLSOFT_NOEXCEPT;
+
+    /// Returns the first character in the string
+    ///
+    /// \note It is us to the user to ensure that the string is not empty
+    reference               front() STLSOFT_NOEXCEPT;
+    /// Returns the last character in the string
+    ///
+    /// \note It is us to the user to ensure that the string is not empty
+    reference               back() STLSOFT_NOEXCEPT;
+    /// Returns the first character in the string
+    ///
+    /// \note It is us to the user to ensure that the string is not empty
+    const_reference         front() const STLSOFT_NOEXCEPT;
+    /// Returns the last character in the string
+    ///
+    /// \note It is us to the user to ensure that the string is not empty
+    const_reference         back() const STLSOFT_NOEXCEPT;
 
     /// Copies elements into the given destination
     size_type copy(
@@ -580,6 +611,15 @@ private:
     ,   char_type const*    rhs
     ,   size_type           rhs_len
     ) STLSOFT_NOEXCEPT;
+
+    bool starts_with_(
+        char_type const*    s
+    ,   size_type           n
+    ) const STLSOFT_NOEXCEPT;
+    bool ends_with_(
+        char_type const*    s
+    ,   size_type           n
+    ) const STLSOFT_NOEXCEPT;
 
     // Assignment
 #if defined(STLSOFT_CF_MEMBER_TEMPLATE_RANGE_METHOD_SUPPORT)
@@ -2108,6 +2148,143 @@ template <
 ,   ss_typename_param_k T
 >
 inline
+ss_bool_t
+basic_static_string<C, V_internalSize, T>::starts_with_(
+    ss_typename_type_k basic_static_string<C, V_internalSize, T>::char_type const*  s
+,   ss_typename_type_k basic_static_string<C, V_internalSize, T>::size_type         n
+) const STLSOFT_NOEXCEPT
+{
+    if (n > m_length)
+    {
+        return false;
+    }
+
+    if (n == 0)
+    {
+        return true;
+    }
+
+    return 0 == class_type::compare_(
+        m_buffer
+    ,   n
+    ,   s + 0
+    ,   n
+    );
+}
+
+template <
+    ss_typename_param_k C
+,   ss_size_t           V_internalSize
+,   ss_typename_param_k T
+>
+inline
+ss_bool_t
+basic_static_string<C, V_internalSize, T>::ends_with_(
+    ss_typename_type_k basic_static_string<C, V_internalSize, T>::char_type const*  s
+,   ss_typename_type_k basic_static_string<C, V_internalSize, T>::size_type         n
+) const STLSOFT_NOEXCEPT
+{
+    if (n > m_length)
+    {
+        return false;
+    }
+
+    if (n == 0)
+    {
+        return true;
+    }
+
+    return 0 == class_type::compare_(
+        m_buffer + (m_length - n)
+    ,   n
+    ,   s + 0
+    ,   n
+    );
+}
+
+template <
+    ss_typename_param_k C
+,   ss_size_t           V_internalSize
+,   ss_typename_param_k T
+>
+inline
+ss_bool_t
+basic_static_string<C, V_internalSize, T>::starts_with(ss_typename_type_k basic_static_string<C, V_internalSize, T>::class_type const& s) const STLSOFT_NOEXCEPT
+{
+    return starts_with_(s.data(), s.size());
+}
+
+template <
+    ss_typename_param_k C
+,   ss_size_t           V_internalSize
+,   ss_typename_param_k T
+>
+inline
+ss_bool_t
+basic_static_string<C, V_internalSize, T>::starts_with(ss_typename_type_k basic_static_string<C, V_internalSize, T>::char_type const* s) const STLSOFT_NOEXCEPT
+{
+    size_type const n = (NULL == s) ? 0 : traits_type::length(s);
+
+    return starts_with_(s, n);
+}
+
+template <
+    ss_typename_param_k C
+,   ss_size_t           V_internalSize
+,   ss_typename_param_k T
+>
+inline
+ss_bool_t
+basic_static_string<C, V_internalSize, T>::starts_with(ss_typename_type_k basic_static_string<C, V_internalSize, T>::char_type ch) const STLSOFT_NOEXCEPT
+{
+    return empty() ? false : (front() == ch);
+}
+
+template <
+    ss_typename_param_k C
+,   ss_size_t           V_internalSize
+,   ss_typename_param_k T
+>
+inline
+ss_bool_t
+basic_static_string<C, V_internalSize, T>::ends_with(ss_typename_type_k basic_static_string<C, V_internalSize, T>::class_type const& s) const STLSOFT_NOEXCEPT
+{
+    return ends_with_(s.data(), s.size());
+}
+
+template <
+    ss_typename_param_k C
+,   ss_size_t           V_internalSize
+,   ss_typename_param_k T
+>
+inline
+ss_bool_t
+basic_static_string<C, V_internalSize, T>::ends_with(ss_typename_type_k basic_static_string<C, V_internalSize, T>::char_type const* s) const STLSOFT_NOEXCEPT
+{
+    size_type const n = (NULL == s) ? 0 : traits_type::length(s);
+
+    return ends_with_(s, n);
+}
+
+template <
+    ss_typename_param_k C
+,   ss_size_t           V_internalSize
+,   ss_typename_param_k T
+>
+inline
+ss_bool_t
+basic_static_string<C, V_internalSize, T>::ends_with(ss_typename_type_k basic_static_string<C, V_internalSize, T>::char_type ch) const STLSOFT_NOEXCEPT
+{
+    return empty() ? false : (back() == ch);
+}
+
+
+template <
+    ss_typename_param_k C
+,   ss_size_t           V_internalSize
+,   ss_typename_param_k T
+>
+inline
 ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::reference
 basic_static_string<C, V_internalSize, T>::operator [](ss_typename_type_k basic_static_string<C, V_internalSize, T>::size_type index) STLSOFT_NOEXCEPT
 {
@@ -2562,6 +2739,54 @@ basic_static_string<C, V_internalSize, T>::data() const STLSOFT_NOEXCEPT
     STLSOFT_ASSERT(is_valid());
 
     return m_buffer;
+}
+
+template <
+    ss_typename_param_k C
+,   ss_size_t           V_internalSize
+,   ss_typename_param_k T
+>
+inline
+ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::reference
+basic_static_string<C, V_internalSize, T>::front() STLSOFT_NOEXCEPT
+{
+    return (*this)[0];
+}
+
+template <
+    ss_typename_param_k C
+,   ss_size_t           V_internalSize
+,   ss_typename_param_k T
+>
+inline
+ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::reference
+basic_static_string<C, V_internalSize, T>::back() STLSOFT_NOEXCEPT
+{
+    return (*this)[length() - 1];
+}
+
+template <
+    ss_typename_param_k C
+,   ss_size_t           V_internalSize
+,   ss_typename_param_k T
+>
+inline
+ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::const_reference
+basic_static_string<C, V_internalSize, T>::front() const STLSOFT_NOEXCEPT
+{
+    return (*this)[0];
+}
+
+template <
+    ss_typename_param_k C
+,   ss_size_t           V_internalSize
+,   ss_typename_param_k T
+>
+inline
+ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::const_reference
+basic_static_string<C, V_internalSize, T>::back() const STLSOFT_NOEXCEPT
+{
+    return (*this)[length() - 1];
 }
 
 template <

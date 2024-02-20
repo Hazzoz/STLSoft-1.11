@@ -53,9 +53,9 @@
 
 #ifndef STLSOFT_DOCUMENTATION_SKIP_SECTION
 # define STLSOFT_VER_STLSOFT_STRING_HPP_SIMPLE_STRING_MAJOR    4
-# define STLSOFT_VER_STLSOFT_STRING_HPP_SIMPLE_STRING_MINOR    5
-# define STLSOFT_VER_STLSOFT_STRING_HPP_SIMPLE_STRING_REVISION 2
-# define STLSOFT_VER_STLSOFT_STRING_HPP_SIMPLE_STRING_EDIT     275
+# define STLSOFT_VER_STLSOFT_STRING_HPP_SIMPLE_STRING_MINOR    6
+# define STLSOFT_VER_STLSOFT_STRING_HPP_SIMPLE_STRING_REVISION 1
+# define STLSOFT_VER_STLSOFT_STRING_HPP_SIMPLE_STRING_EDIT     276
 #endif /* !STLSOFT_DOCUMENTATION_SKIP_SECTION */
 
 
@@ -422,7 +422,7 @@ public:
 /// \name Comparison
 /// @{
 public:
-#if 0
+#ifdef STLSOFT_SIMPLE_STRING_HAS_equal
     /// Compares \c this with the given string
     ss_sint_t equal(size_type pos, size_type cch, value_type const* s, size_type cchRhs) const STLSOFT_NOEXCEPT;
     /// Compares \c this with the given string
@@ -435,7 +435,7 @@ public:
     ss_sint_t equal(size_type pos, size_type cch, class_type const& rhs) const STLSOFT_NOEXCEPT;
     /// Compares \c this with the given string
     ss_sint_t equal(class_type const& rhs) const STLSOFT_NOEXCEPT;
-#endif /* 0 */
+#endif
 
     /// Compares \c this with the given string
     ss_sint_t compare(size_type pos, size_type cch, value_type const* s, size_type cchRhs) const STLSOFT_NOEXCEPT;
@@ -449,6 +449,20 @@ public:
     ss_sint_t compare(size_type pos, size_type cch, class_type const& rhs) const STLSOFT_NOEXCEPT;
     /// Compares \c this with the given string
     ss_sint_t compare(class_type const& rhs) const STLSOFT_NOEXCEPT;
+
+    /// Indicates whether the string starts with the string \c s
+    bool starts_with(class_type const& s) const STLSOFT_NOEXCEPT;
+    /// Indicates whether the string starts with the C-style string \c s
+    bool starts_with(char_type const* s) const STLSOFT_NOEXCEPT;
+    /// Indicates whether the string starts with the character \c ch
+    bool starts_with(char_type ch) const STLSOFT_NOEXCEPT;
+
+    /// Indicates whether the string ends with the string \c s
+    bool ends_with(class_type const& s) const STLSOFT_NOEXCEPT;
+    /// Indicates whether the string ends with the C-style string \c s
+    bool ends_with(char_type const* s) const STLSOFT_NOEXCEPT;
+    /// Indicates whether the string ends with the character \c ch
+    bool ends_with(char_type ch) const STLSOFT_NOEXCEPT;
 /// @}
 
 /// \name Accessors
@@ -623,6 +637,25 @@ private:
     ,   char_type const*    rhs
     ,   size_type           rhs_len
     ) STLSOFT_NOEXCEPT;
+
+#ifdef STLSOFT_SIMPLE_STRING_HAS_equal
+    static ss_bool_t equal_(
+        char_type const*    lhs
+    ,   size_type           lhs_len
+    ,   char_type const*    rhs
+    ,   size_type           rhs_len
+    ) STLSOFT_NOEXCEPT;
+#endif
+
+    bool starts_with_(
+        char_type const*    s
+    ,   size_type           n
+    ) const STLSOFT_NOEXCEPT;
+    bool ends_with_(
+        char_type const*    s
+    ,   size_type           n
+    ) const STLSOFT_NOEXCEPT;
+
 
     // Assignment
 #if defined(STLSOFT_CF_MEMBER_TEMPLATE_RANGE_METHOD_SUPPORT)
@@ -2092,7 +2125,9 @@ template <
 ,   ss_typename_param_k A
 >
 inline
-/* static */ ss_sint_t basic_simple_string<C, T, A>::compare_(
+/* static */
+ss_sint_t
+basic_simple_string<C, T, A>::compare_(
     ss_typename_type_k basic_simple_string<C, T, A>::value_type const*  lhs
 ,   ss_typename_type_k basic_simple_string<C, T, A>::size_type          lhs_len
 ,   ss_typename_type_k basic_simple_string<C, T, A>::value_type const*  rhs
@@ -2296,6 +2331,169 @@ basic_simple_string<C, T, A>::compare(ss_typename_type_k basic_simple_string<C, 
     size_type   rhs_len =   rhs.length();
 
     return compare_(char_pointer_from_member_pointer_(m_buffer), lhs_len, char_pointer_from_member_pointer_(rhs.m_buffer), rhs_len);
+}
+
+
+template <
+    ss_typename_param_k C
+,   ss_typename_param_k T
+,   ss_typename_param_k A
+>
+inline
+ss_bool_t
+basic_simple_string<C, T, A>::starts_with_(
+    ss_typename_type_k basic_simple_string<C, T, A>::char_type const*   s
+,   size_type                                                           n
+) const STLSOFT_NOEXCEPT
+{
+    if (NULL == m_buffer)
+    {
+        if (0 == n)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    string_buffer const* buffer = string_buffer_from_member_pointer_(m_buffer);
+
+    if (buffer->length < n)
+    {
+        return false;
+    }
+    else
+    {
+        // TODO: use equal_()
+
+        return 0 == class_type::compare_(
+            buffer->contents
+        ,   n
+        ,   s + 0
+        ,   n
+        );
+    }
+}
+
+template <
+    ss_typename_param_k C
+,   ss_typename_param_k T
+,   ss_typename_param_k A
+>
+inline
+ss_bool_t
+basic_simple_string<C, T, A>::ends_with_(
+    ss_typename_type_k basic_simple_string<C, T, A>::char_type const*   s
+,   size_type                                                           n
+) const STLSOFT_NOEXCEPT
+{
+    if (NULL == m_buffer)
+    {
+        if (0 == n)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    string_buffer const* buffer = string_buffer_from_member_pointer_(m_buffer);
+
+    if (buffer->length < n)
+    {
+        return false;
+    }
+    else
+    {
+        // TODO: use equal_()
+
+        return 0 == class_type::compare_(
+            buffer->contents + (buffer->length - n)
+        ,   n
+        ,   s + 0
+        ,   n
+        );
+    }
+}
+
+template <
+    ss_typename_param_k C
+,   ss_typename_param_k T
+,   ss_typename_param_k A
+>
+inline
+ss_bool_t
+basic_simple_string<C, T, A>::starts_with(ss_typename_type_k basic_simple_string<C, T, A>::class_type const& s) const STLSOFT_NOEXCEPT
+{
+    return starts_with_(s.data(), s.size());
+}
+
+template <
+    ss_typename_param_k C
+,   ss_typename_param_k T
+,   ss_typename_param_k A
+>
+inline
+ss_bool_t
+basic_simple_string<C, T, A>::starts_with(ss_typename_type_k basic_simple_string<C, T, A>::char_type const* s) const STLSOFT_NOEXCEPT
+{
+    size_type const n = (NULL == s) ? 0 : traits_type::length(s);
+
+    return starts_with_(s, n);
+}
+
+template <
+    ss_typename_param_k C
+,   ss_typename_param_k T
+,   ss_typename_param_k A
+>
+inline
+ss_bool_t
+basic_simple_string<C, T, A>::starts_with(ss_typename_type_k basic_simple_string<C, T, A>::char_type ch) const STLSOFT_NOEXCEPT
+{
+    return empty() ? false : (front() == ch);
+}
+
+template <
+    ss_typename_param_k C
+,   ss_typename_param_k T
+,   ss_typename_param_k A
+>
+inline
+ss_bool_t
+basic_simple_string<C, T, A>::ends_with(ss_typename_type_k basic_simple_string<C, T, A>::class_type const& s) const STLSOFT_NOEXCEPT
+{
+    return ends_with_(s.data(), s.size());
+}
+
+template <
+    ss_typename_param_k C
+,   ss_typename_param_k T
+,   ss_typename_param_k A
+>
+inline
+ss_bool_t
+basic_simple_string<C, T, A>::ends_with(ss_typename_type_k basic_simple_string<C, T, A>::char_type const* s) const STLSOFT_NOEXCEPT
+{
+    size_type const n = (NULL == s) ? 0 : traits_type::length(s);
+
+    return ends_with_(s, n);
+}
+
+template <
+    ss_typename_param_k C
+,   ss_typename_param_k T
+,   ss_typename_param_k A
+>
+inline
+ss_bool_t
+basic_simple_string<C, T, A>::ends_with(ss_typename_type_k basic_simple_string<C, T, A>::char_type ch) const STLSOFT_NOEXCEPT
+{
+    return empty() ? false : (back() == ch);
 }
 
 // Accessors

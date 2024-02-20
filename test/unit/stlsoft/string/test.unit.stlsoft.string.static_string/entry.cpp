@@ -130,6 +130,11 @@ namespace
 
     // comparison
 
+    static void test_starts_with_1(void);
+    static void test_starts_with_2(void);
+    static void test_ends_with_1(void);
+    static void test_ends_with_2(void);
+
 
     // accessors
 
@@ -255,6 +260,10 @@ int main(int argc, char* argv[])
 
         // comparison
 
+        XTESTS_RUN_CASE(test_starts_with_1);
+        XTESTS_RUN_CASE(test_starts_with_2);
+        XTESTS_RUN_CASE(test_ends_with_1);
+        XTESTS_RUN_CASE(test_ends_with_2);
 
         // accessors
 
@@ -1489,6 +1498,300 @@ static void test_empty()
 
 
 // comparison
+
+static void test_starts_with_1()
+{
+    typedef string_30_t string_t;
+
+    string_t const s;
+
+    {
+        XTESTS_TEST_BOOLEAN_TRUE(s.starts_with(""));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with("a"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with("b"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with("c"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with("d"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with("e"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with("i"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with("o"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with("u"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with("x"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with("y"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with("z"));
+
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with("ab"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with("abc"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with("abcd"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with("abcde"));
+
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with("aa"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with("bcde"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with("acde"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with("abde"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with("abce"));
+    }
+
+    {
+        XTESTS_TEST_BOOLEAN_TRUE(s.starts_with(string_t("")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with(string_t("a")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with(string_t("b")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with(string_t("c")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with(string_t("d")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with(string_t("e")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with(string_t("i")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with(string_t("o")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with(string_t("u")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with(string_t("x")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with(string_t("y")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with(string_t("z")));
+
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with(string_t("ab")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with(string_t("abc")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with(string_t("abcd")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with(string_t("abcde")));
+
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with(string_t("aa")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with(string_t("bcde")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with(string_t("acde")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with(string_t("abde")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with(string_t("abce")));
+    }
+
+    {
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with('a'));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with('b'));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with('c'));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with('d'));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with('e'));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with('i'));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with('o'));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with('u'));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with('x'));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with('y'));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with('z'));
+    }
+}
+
+static void test_starts_with_2()
+{
+    typedef string_30_t string_t;
+
+    string_t const s(alphabet);
+
+    {
+        XTESTS_TEST_BOOLEAN_TRUE(s.starts_with(""));
+        XTESTS_TEST_BOOLEAN_TRUE(s.starts_with("a"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with("b"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with("c"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with("d"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with("e"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with("i"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with("o"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with("u"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with("x"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with("y"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with("z"));
+
+        XTESTS_TEST_BOOLEAN_TRUE(s.starts_with("ab"));
+        XTESTS_TEST_BOOLEAN_TRUE(s.starts_with("abc"));
+        XTESTS_TEST_BOOLEAN_TRUE(s.starts_with("abcd"));
+        XTESTS_TEST_BOOLEAN_TRUE(s.starts_with("abcde"));
+
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with("aa"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with("bcde"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with("acde"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with("abde"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with("abce"));
+    }
+
+    {
+        XTESTS_TEST_BOOLEAN_TRUE(s.starts_with(string_t("")));
+        XTESTS_TEST_BOOLEAN_TRUE(s.starts_with(string_t("a")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with(string_t("b")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with(string_t("c")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with(string_t("d")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with(string_t("e")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with(string_t("i")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with(string_t("o")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with(string_t("u")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with(string_t("x")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with(string_t("y")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with(string_t("z")));
+
+        XTESTS_TEST_BOOLEAN_TRUE(s.starts_with(string_t("ab")));
+        XTESTS_TEST_BOOLEAN_TRUE(s.starts_with(string_t("abc")));
+        XTESTS_TEST_BOOLEAN_TRUE(s.starts_with(string_t("abcd")));
+        XTESTS_TEST_BOOLEAN_TRUE(s.starts_with(string_t("abcde")));
+
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with(string_t("aa")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with(string_t("bcde")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with(string_t("acde")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with(string_t("abde")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with(string_t("abce")));
+    }
+
+    {
+        XTESTS_TEST_BOOLEAN_TRUE(s.starts_with('a'));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with('b'));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with('c'));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with('d'));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with('e'));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with('i'));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with('o'));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with('u'));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with('x'));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with('y'));
+        XTESTS_TEST_BOOLEAN_FALSE(s.starts_with('z'));
+    }
+}
+
+static void test_ends_with_1()
+{
+    typedef string_30_t string_t;
+
+    string_t const s;
+
+    {
+        XTESTS_TEST_BOOLEAN_TRUE(s.ends_with(""));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with("a"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with("b"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with("c"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with("d"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with("e"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with("i"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with("o"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with("u"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with("x"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with("y"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with("z"));
+
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with("yz"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with("xyz"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with("wxyz"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with("vwxyz"));
+
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with("aa"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with("bcde"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with("acde"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with("abde"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with("abce"));
+    }
+
+    {
+        XTESTS_TEST_BOOLEAN_TRUE(s.ends_with(string_t("")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with(string_t("a")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with(string_t("b")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with(string_t("c")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with(string_t("d")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with(string_t("e")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with(string_t("i")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with(string_t("o")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with(string_t("u")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with(string_t("x")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with(string_t("y")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with(string_t("z")));
+
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with(string_t("yz")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with(string_t("xyz")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with(string_t("wxyz")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with(string_t("vwxyz")));
+
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with(string_t("aa")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with(string_t("bcde")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with(string_t("acde")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with(string_t("abde")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with(string_t("abce")));
+    }
+
+
+    {
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with('a'));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with('b'));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with('c'));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with('d'));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with('e'));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with('i'));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with('o'));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with('u'));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with('x'));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with('y'));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with('z'));
+    }
+}
+
+static void test_ends_with_2()
+{
+    typedef string_30_t string_t;
+
+    string_t const s(alphabet);
+
+    {
+        XTESTS_TEST_BOOLEAN_TRUE(s.ends_with(""));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with("a"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with("b"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with("c"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with("d"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with("e"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with("i"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with("o"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with("u"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with("x"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with("y"));
+        XTESTS_TEST_BOOLEAN_TRUE(s.ends_with("z"));
+
+        XTESTS_TEST_BOOLEAN_TRUE(s.ends_with("yz"));
+        XTESTS_TEST_BOOLEAN_TRUE(s.ends_with("xyz"));
+        XTESTS_TEST_BOOLEAN_TRUE(s.ends_with("wxyz"));
+        XTESTS_TEST_BOOLEAN_TRUE(s.ends_with("vwxyz"));
+
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with("aa"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with("bcde"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with("acde"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with("abde"));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with("abce"));
+    }
+
+    {
+        XTESTS_TEST_BOOLEAN_TRUE(s.ends_with(string_t("")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with(string_t("a")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with(string_t("b")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with(string_t("c")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with(string_t("d")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with(string_t("e")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with(string_t("i")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with(string_t("o")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with(string_t("u")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with(string_t("x")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with(string_t("y")));
+        XTESTS_TEST_BOOLEAN_TRUE(s.ends_with(string_t("z")));
+
+        XTESTS_TEST_BOOLEAN_TRUE(s.ends_with(string_t("yz")));
+        XTESTS_TEST_BOOLEAN_TRUE(s.ends_with(string_t("xyz")));
+        XTESTS_TEST_BOOLEAN_TRUE(s.ends_with(string_t("wxyz")));
+        XTESTS_TEST_BOOLEAN_TRUE(s.ends_with(string_t("vwxyz")));
+
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with(string_t("aa")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with(string_t("bcde")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with(string_t("acde")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with(string_t("abde")));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with(string_t("abce")));
+    }
+
+
+    {
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with('a'));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with('b'));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with('c'));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with('d'));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with('e'));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with('i'));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with('o'));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with('u'));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with('x'));
+        XTESTS_TEST_BOOLEAN_FALSE(s.ends_with('y'));
+        XTESTS_TEST_BOOLEAN_TRUE(s.ends_with('z'));
+    }
+}
 
 
 // accessors
