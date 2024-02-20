@@ -1982,7 +1982,7 @@ basic_simple_string<C, T, A>::basic_simple_string(
     ss_typename_type_k basic_simple_string<C, T, A>::class_type const&  rhs
 ,   ss_typename_type_k basic_simple_string<C, T, A>::size_type          pos
 )
-    : m_buffer(alloc_buffer_(&rhs[pos], rhs.length() - pos))
+    : m_buffer(alloc_buffer_(&rhs[pos], rhs.size() - pos))
 {
 
     STLSOFT_ASSERT(is_valid());
@@ -1999,7 +1999,7 @@ basic_simple_string<C, T, A>::basic_simple_string(
 ,   ss_typename_type_k basic_simple_string<C, T, A>::size_type          pos
 ,   ss_typename_type_k basic_simple_string<C, T, A>::size_type          cch
 )
-    : m_buffer(alloc_buffer_(&rhs[pos], cch, minimum(cch, rhs.length() - pos)))
+    : m_buffer(alloc_buffer_(&rhs[pos], cch, minimum(cch, rhs.size() - pos)))
 {
     STLSOFT_ASSERT(is_valid());
 }
@@ -2159,7 +2159,7 @@ basic_simple_string<C, T, A>::compare(
 ,   ss_typename_type_k basic_simple_string<C, T, A>::size_type          cchRhs
 ) const STLSOFT_NOEXCEPT
 {
-    size_type lhs_len = length();
+    size_type lhs_len = size();
 
     if (!(pos < lhs_len))
     {
@@ -2198,7 +2198,7 @@ basic_simple_string<C, T, A>::compare(
 ,   ss_typename_type_k basic_simple_string<C, T, A>::value_type const*  rhs
 ) const STLSOFT_NOEXCEPT
 {
-    size_type lhs_len = length();
+    size_type lhs_len = size();
 
     if (!(pos < lhs_len))
     {
@@ -2228,7 +2228,7 @@ inline
 ss_sint_t
 basic_simple_string<C, T, A>::compare(ss_typename_type_k basic_simple_string<C, T, A>::value_type const* rhs) const STLSOFT_NOEXCEPT
 {
-    size_type   lhs_len =   length();
+    size_type   lhs_len =   size();
     size_type   rhs_len =   (NULL == rhs) ? 0 : traits_type::length(rhs);
 
     return compare_(char_pointer_from_member_pointer_(m_buffer), lhs_len, rhs, rhs_len);
@@ -2249,7 +2249,7 @@ basic_simple_string<C, T, A>::compare(
 ,   ss_typename_type_k basic_simple_string<C, T, A>::size_type          cchRhs
 ) const STLSOFT_NOEXCEPT
 {
-    size_type lhs_len = length();
+    size_type lhs_len = size();
 
     if (pos == lhs_len)
     {
@@ -2265,7 +2265,7 @@ basic_simple_string<C, T, A>::compare(
         lhs_len = cch;
     }
 
-    size_type rhs_len = rhs.length();
+    size_type rhs_len = rhs.size();
 
     if (posRhs == rhs_len)
     {
@@ -2297,7 +2297,7 @@ basic_simple_string<C, T, A>::compare(
 ,   ss_typename_type_k basic_simple_string<C, T, A>::class_type const&  rhs
 ) const STLSOFT_NOEXCEPT
 {
-    size_type lhs_len = length();
+    size_type lhs_len = size();
 
     if (!(pos < lhs_len))
     {
@@ -2313,7 +2313,7 @@ basic_simple_string<C, T, A>::compare(
         lhs_len = cch;
     }
 
-    size_type rhs_len = rhs.length();
+    size_type rhs_len = rhs.size();
 
     return compare_(char_pointer_from_member_pointer_(m_buffer) + pos, lhs_len, char_pointer_from_member_pointer_(rhs.m_buffer), rhs_len);
 }
@@ -2327,8 +2327,8 @@ inline
 ss_sint_t
 basic_simple_string<C, T, A>::compare(ss_typename_type_k basic_simple_string<C, T, A>::class_type const& rhs) const STLSOFT_NOEXCEPT
 {
-    size_type   lhs_len =   length();
-    size_type   rhs_len =   rhs.length();
+    size_type   lhs_len =   size();
+    size_type   rhs_len =   rhs.size();
 
     return compare_(char_pointer_from_member_pointer_(m_buffer), lhs_len, char_pointer_from_member_pointer_(rhs.m_buffer), rhs_len);
 }
@@ -2506,7 +2506,7 @@ inline
 ss_typename_type_ret_k basic_simple_string<C, T, A>::reference
 basic_simple_string<C, T, A>::operator [](ss_typename_type_k basic_simple_string<C, T, A>::size_type index) STLSOFT_NOEXCEPT
 {
-    STLSOFT_MESSAGE_ASSERT("index access out of range in simple_string", index < length());
+    STLSOFT_MESSAGE_ASSERT("index access out of range in simple_string", index < size());
 
     STLSOFT_ASSERT(is_valid());
 
@@ -2522,7 +2522,7 @@ inline
 ss_typename_type_ret_k basic_simple_string<C, T, A>::const_reference
 basic_simple_string<C, T, A>::operator [](ss_typename_type_k basic_simple_string<C, T, A>::size_type index) const STLSOFT_NOEXCEPT
 {
-    STLSOFT_MESSAGE_ASSERT("index access out of range in simple_string", index < length() + 1); // Valid to return (const) reference to nul-terminator
+    STLSOFT_MESSAGE_ASSERT("index access out of range in simple_string", index < size() + 1); // Valid to return (const) reference to nul-terminator
 
     STLSOFT_ASSERT(is_valid());
 
@@ -2593,9 +2593,9 @@ basic_simple_string<C, T, A>::substr(
 
     STLSOFT_ASSERT(is_valid());
 
-    if (cch > (this->length() - pos))
+    if (cch > (this->size() - pos))
     {
-        cch = this->length() - pos;
+        cch = this->size() - pos;
     }
 
     return class_type(this->data() + pos, cch);
@@ -2621,7 +2621,7 @@ basic_simple_string<C, T, A>::substr(
 
     STLSOFT_ASSERT(is_valid());
 
-    return class_type(this->data() + pos, this->length() - pos);
+    return class_type(this->data() + pos, this->size() - pos);
 }
 
 template <
@@ -2682,7 +2682,7 @@ inline
 ss_typename_type_ret_k basic_simple_string<C, T, A>::reference
 basic_simple_string<C, T, A>::back() STLSOFT_NOEXCEPT
 {
-    return (*this)[length() - 1];
+    return (*this)[size() - 1];
 }
 
 template <
@@ -2706,7 +2706,7 @@ inline
 ss_typename_type_ret_k basic_simple_string<C, T, A>::const_reference
 basic_simple_string<C, T, A>::back() const STLSOFT_NOEXCEPT
 {
-    return (*this)[length() - 1];
+    return (*this)[size() - 1];
 }
 
 template <
@@ -2722,7 +2722,7 @@ basic_simple_string<C, T, A>::copy(
 ,   ss_typename_type_k basic_simple_string<C, T, A>::size_type      pos /* = 0 */
 ) const STLSOFT_NOEXCEPT
 {
-    size_type len = length();
+    size_type len = size();
 
     if (pos < len)
     {
@@ -2939,7 +2939,7 @@ basic_simple_string<C, T, A>::assign(
 )
 {
     char_type*  s   =   char_pointer_from_member_pointer_(rhs.m_buffer);
-    size_type   len =   rhs.length();
+    size_type   len =   rhs.size();
 
     if (len < pos)
     {
@@ -2972,7 +2972,7 @@ inline
 ss_typename_type_ret_k basic_simple_string<C, T, A>::class_type&
 basic_simple_string<C, T, A>::assign(ss_typename_type_k basic_simple_string<C, T, A>::class_type const& rhs)
 {
-    return assign(char_pointer_from_member_pointer_(rhs.m_buffer), rhs.length());
+    return assign(char_pointer_from_member_pointer_(rhs.m_buffer), rhs.size());
 }
 
 template <
@@ -3153,7 +3153,7 @@ basic_simple_string<C, T, A>::append(
 )
 {
     char_type*  s   =   char_pointer_from_member_pointer_(rhs.m_buffer);
-    size_type   len =   rhs.length();
+    size_type   len =   rhs.size();
 
     if (len < pos)
     {
@@ -3190,7 +3190,7 @@ inline
 ss_typename_type_ret_k basic_simple_string<C, T, A>::class_type&
 basic_simple_string<C, T, A>::append(ss_typename_type_k basic_simple_string<C, T, A>::class_type const& s)
 {
-    return append(char_pointer_from_member_pointer_(s.m_buffer), s.length());
+    return append(char_pointer_from_member_pointer_(s.m_buffer), s.size());
 }
 
 template <
@@ -3318,7 +3318,7 @@ inline
 void
 basic_simple_string<C, T, A>::reserve(ss_typename_type_k basic_simple_string<C, T, A>::size_type cch)
 {
-    if (length() < cch)
+    if (size() < cch)
     {
         if (NULL == m_buffer)
         {
@@ -3333,7 +3333,7 @@ basic_simple_string<C, T, A>::reserve(ss_typename_type_k basic_simple_string<C, 
             else
             {
                 // Allocate a new buffer of sufficient size
-                member_pointer const new_buffer = alloc_buffer_(c_str(), cch, length());
+                member_pointer const new_buffer = alloc_buffer_(c_str(), cch, size());
 
                 if (NULL != new_buffer) // Some allocators do not throw on failure!
                 {
@@ -3374,7 +3374,7 @@ basic_simple_string<C, T, A>::resize(
 {
     STLSOFT_ASSERT(is_valid());
 
-    size_type const len = length();
+    size_type const len = size();
 
     if (len != cch)
     {
@@ -3481,7 +3481,7 @@ basic_simple_string<C, T, A>::empty() const STLSOFT_NOEXCEPT
 {
     STLSOFT_ASSERT(is_valid());
 
-    return 0 == length();
+    return 0 == size();
 }
 
 #endif /* !STLSOFT_DOCUMENTATION_SKIP_SECTION */

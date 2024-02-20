@@ -1889,7 +1889,7 @@ basic_static_string<C, V_internalSize, T>::compare(
 {
     STLSOFT_ASSERT(is_valid());
 
-    size_type lhs_len = length();
+    size_type lhs_len = size();
 
     if (!(pos < lhs_len))
     {
@@ -1932,7 +1932,7 @@ basic_static_string<C, V_internalSize, T>::compare(
 {
     STLSOFT_ASSERT(is_valid());
 
-    size_type lhs_len = length();
+    size_type lhs_len = size();
 
     if (!(pos < lhs_len))
     {
@@ -1968,7 +1968,7 @@ basic_static_string<C, V_internalSize, T>::compare(
 {
     STLSOFT_ASSERT(is_valid());
 
-    size_type const lhs_len =   length();
+    size_type const lhs_len =   size();
     size_type const rhs_len =   (s == 0) ? 0 : traits_type::length(s);
 
     STLSOFT_ASSERT(is_valid());
@@ -1993,7 +1993,7 @@ basic_static_string<C, V_internalSize, T>::compare(
 {
     STLSOFT_ASSERT(is_valid());
 
-    size_type lhs_len = length();
+    size_type lhs_len = size();
 
     if (!(pos < lhs_len))
     {
@@ -2045,7 +2045,7 @@ basic_static_string<C, V_internalSize, T>::compare(
 {
     STLSOFT_ASSERT(is_valid());
 
-    size_type lhs_len = length();
+    size_type lhs_len = size();
 
     if (!(pos < lhs_len))
     {
@@ -2081,7 +2081,7 @@ basic_static_string<C, V_internalSize, T>::compare(
 {
     STLSOFT_ASSERT(is_valid());
 
-    size_type const lhs_len =   length();
+    size_type const lhs_len =   size();
     size_type const rhs_len =   rhs.size();
 
     STLSOFT_ASSERT(is_valid());
@@ -2109,7 +2109,7 @@ basic_static_string<C, V_internalSize, T>::resize(
 
     STLSOFT_ASSERT(is_valid());
 
-    size_type const len = length();
+    size_type const len = size();
 
     if (len != n)
     {
@@ -2377,9 +2377,9 @@ basic_static_string<C, V_internalSize, T>::substr(
 
     STLSOFT_ASSERT(is_valid());
 
-    if (cch > (this->length() - pos))
+    if (cch > (this->size() - pos))
     {
-        cch = this->length() - pos;
+        cch = this->size() - pos;
     }
 
     return class_type(this->data() + pos, cch);
@@ -2405,7 +2405,7 @@ basic_static_string<C, V_internalSize, T>::substr(
 
     STLSOFT_ASSERT(is_valid());
 
-    return class_type(this->data() + pos, this->length() - pos);
+    return class_type(this->data() + pos, this->size() - pos);
 }
 
 template <
@@ -2762,7 +2762,7 @@ inline
 ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::reference
 basic_static_string<C, V_internalSize, T>::back() STLSOFT_NOEXCEPT
 {
-    return (*this)[length() - 1];
+    return (*this)[size() - 1];
 }
 
 template <
@@ -2786,7 +2786,7 @@ inline
 ss_typename_type_ret_k basic_static_string<C, V_internalSize, T>::const_reference
 basic_static_string<C, V_internalSize, T>::back() const STLSOFT_NOEXCEPT
 {
-    return (*this)[length() - 1];
+    return (*this)[size() - 1];
 }
 
 template <
@@ -2804,7 +2804,7 @@ basic_static_string<C, V_internalSize, T>::copy(
 {
     STLSOFT_ASSERT(is_valid());
 
-    size_type len = length();
+    size_type len = size();
 
     if (pos < len)
     {
