@@ -1454,7 +1454,7 @@ inline ss_typename_type_ret_k CString_adaptor_base<I>::size_type CString_adaptor
 template<ss_typename_param_k I>
 inline ss_typename_type_ret_k CString_adaptor_base<I>::bool_type CString_adaptor_base<I>::empty() const
 {
-    return 0 == this->length();
+    return 0 == size();
 }
 template<ss_typename_param_k I>
 inline ss_typename_type_ret_k CString_adaptor_base<I>::const_pointer CString_adaptor_base<I>::c_str() const
