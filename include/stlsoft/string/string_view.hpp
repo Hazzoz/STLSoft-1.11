@@ -1,16 +1,16 @@
 /* /////////////////////////////////////////////////////////////////////////
- * File:        stlsoft/string/string_view.hpp
+ * File:    stlsoft/string/string_view.hpp
  *
- * Purpose:     basic_string_view class.
+ * Purpose: basic_string_view class.
  *
- * Created:     16th October 2004
- * Updated:     30th January 2024
+ * Created: 16th October 2004
+ * Updated: 20th February 2024
  *
- * Thanks to:   Bjorn Karlsson and Scott Patterson for discussions on various
- *              naming and design issues. Thanks also to Pablo Aguilar for
- *              his eagle eyed reviews of beta code. :-)
+ * Thanks:  Bjorn Karlsson and Scott Patterson for discussions on various
+ *          naming and design issues. Thanks also to Pablo Aguilar for
+ *          his eagle eyed reviews of beta code. :-)
  *
- * Home:        http://stlsoft.org/
+ * Home:    http://stlsoft.org/
  *
  * Copyright (c) 2019-2024, Matthew Wilson and Synesis Information Systems
  * Copyright (c) 2004-2019, Matthew Wilson and Synesis Software
@@ -59,7 +59,7 @@
 # define STLSOFT_VER_STLSOFT_STRING_HPP_STRING_VIEW_MAJOR       3
 # define STLSOFT_VER_STLSOFT_STRING_HPP_STRING_VIEW_MINOR       6
 # define STLSOFT_VER_STLSOFT_STRING_HPP_STRING_VIEW_REVISION    1
-# define STLSOFT_VER_STLSOFT_STRING_HPP_STRING_VIEW_EDIT        114
+# define STLSOFT_VER_STLSOFT_STRING_HPP_STRING_VIEW_EDIT        115
 #endif /* !STLSOFT_DOCUMENTATION_SKIP_SECTION */
 
 /* /////////////////////////////////////////////////////////////////////////
@@ -518,9 +518,9 @@ struct string_traits<basic_string_view<C, T, A> >
     }
 # ifdef STLSOFT_CF_MEMBER_TEMPLATE_FUNCTION_SUPPORT
     template <ss_typename_param_k I>
-    static string_type &assign_inplace(string_type &str, I first, I last)
+    static string_type& assign_inplace(string_type& str, I first, I last)
 # else /* ? STLSOFT_CF_MEMBER_TEMPLATE_FUNCTION_SUPPORT */
-    static string_type &assign_inplace(string_type &str, const_iterator first, const_iterator last)
+    static string_type& assign_inplace(string_type& str, const_iterator first, const_iterator last)
 # endif /* STLSOFT_CF_MEMBER_TEMPLATE_FUNCTION_SUPPORT */
     {
         // string view cannot assign in-place
@@ -561,9 +561,9 @@ struct string_traits<string_view>
     }
 # ifdef STLSOFT_CF_MEMBER_TEMPLATE_FUNCTION_SUPPORT
     template <ss_typename_param_k I>
-    static string_type &assign_inplace(string_type &str, I first, I last)
+    static string_type& assign_inplace(string_type& str, I first, I last)
 # else /* ? STLSOFT_CF_MEMBER_TEMPLATE_FUNCTION_SUPPORT */
-    static string_type &assign_inplace(string_type &str, const_iterator first, const_iterator last)
+    static string_type& assign_inplace(string_type& str, const_iterator first, const_iterator last)
 # endif /* STLSOFT_CF_MEMBER_TEMPLATE_FUNCTION_SUPPORT */
     {
         // string view cannot assign in-place
@@ -604,9 +604,9 @@ struct string_traits<wstring_view>
     }
 # ifdef STLSOFT_CF_MEMBER_TEMPLATE_FUNCTION_SUPPORT
     template <ss_typename_param_k I>
-    static string_type &assign_inplace(string_type &str, I first, I last)
+    static string_type& assign_inplace(string_type& str, I first, I last)
 # else /* ? STLSOFT_CF_MEMBER_TEMPLATE_FUNCTION_SUPPORT */
-    static string_type &assign_inplace(string_type &str, const_iterator first, const_iterator last)
+    static string_type& assign_inplace(string_type& str, const_iterator first, const_iterator last)
 # endif /* STLSOFT_CF_MEMBER_TEMPLATE_FUNCTION_SUPPORT */
     {
         // string view cannot assign in-place
