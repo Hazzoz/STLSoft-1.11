@@ -1,10 +1,10 @@
 /* /////////////////////////////////////////////////////////////////////////
- * File:    test.unit.stlsoft.filesystem.read_line.cpp
+ * File:    test.unit.stlsoft.filesystem.io_functions.read_line.cpp
  *
  * Purpose: Unit-test
  *
  * Created: 11th August 2008
- * Updated: 20th February 2024
+ * Updated: 22nd February 2024
  *
  * ////////////////////////////////////////////////////////////////////// */
 
@@ -17,7 +17,7 @@
  * test component header file include(s)
  */
 
-#include <stlsoft/filesystem/read_line.hpp>
+#include <stlsoft/filesystem/io_functions/read_line.hpp>
 
 /* /////////////////////////////////////
  * general includes
@@ -366,7 +366,7 @@ int main(int argc, char **argv)
 
     XTESTS_COMMANDLINE_PARSEVERBOSITY(argc, argv, &verbosity);
 
-    if(XTESTS_START_RUNNER("test.unit.stlsoft.filesystem.read_line", verbosity))
+    if(XTESTS_START_RUNNER("test.unit.stlsoft.filesystem.io_functions.read_line", verbosity))
     {
         XTESTS_RUN_CASE(test_1_0);
         XTESTS_RUN_CASE(test_1_1);

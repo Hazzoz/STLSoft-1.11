@@ -1,13 +1,13 @@
 
-add_executable(test.unit.stlsoft.filesystem.read_line
+add_executable(test.unit.stlsoft.filesystem.io_functions.read_line
     entry.cpp
 )
 
-target_link_libraries(test.unit.stlsoft.filesystem.read_line
+target_link_libraries(test.unit.stlsoft.filesystem.io_functions.read_line
     xTests::xTests.core
 )
 
-target_compile_options(test.unit.stlsoft.filesystem.read_line PRIVATE
+target_compile_options(test.unit.stlsoft.filesystem.io_functions.read_line PRIVATE
     $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>>:
         -Werror -Wall -Wextra -pedantic
 
